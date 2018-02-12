@@ -1,0 +1,48 @@
+{
+  "name": "flatten-boolean-op",
+  "version": "1.0.0",
+  "description": "Boolean operations on polygons",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexbol99/flatten-boolean-op.git"
+  },
+  "keywords": [
+    "geometry",
+    "polygon",
+    "contour",
+    "boolean",
+    "boolean operations",
+    "union",
+    "intersection",
+    "clipping",
+    "subtraction",
+    "self-intersection",
+    "arrangement"
+  ],
+  "author": "Alex Bol <alexbol99@gmail.com> (https://github.com/alexbol99)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alexbol99/flatten-boolean-op/issues"
+  },
+  "homepage": "https://github.com/alexbol99/flatten-boolean-op#readme",
+  "engines": {
+    "node": ">=4.2.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coveralls": "^2.12.0",
+    "istanbul": "^0.4.5",
+    "jsdoc": "^3.5.5",
+    "jsdom": "9.12.0",
+    "jsdom-global": "2.1.1",
+    "minami": "^1.2.3",
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "flatten-js": "^0.2.19"
+  }
+}
