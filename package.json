@@ -43,6 +43,6 @@
     "mocha": "^3.2.0"
   },
   "dependencies": {
-    "flatten-js": "^0.2.19"
+    "flatten-js": "^0.3.0"
   }
 }
