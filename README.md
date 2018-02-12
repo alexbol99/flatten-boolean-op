@@ -1,6 +1,6 @@
 # Boolean operations on polygons
 
-Flatten-boolean-op is a javascript library performing fast and reliable boolean operations on polygons
+Flatten-boolean-op is a javascript library performing fast and reliable boolean operations on polygons.
 It supports all basic operations on polygons:
 
 * union
@@ -34,7 +34,7 @@ Flatten-boolean-op depends on the **flatten-js** 2d geometry library (https://gi
     let poly2 = new Polygon();
     poly2.addFace([point(100, 20), point(200, 20), point(200, 40), point(100, 40)]);
     
-    // apply boolean operation **union**
+    // apply boolean operation union
     let poly = union(poly1, poly2);   
     
     console.log(poly.faces.size);           // expected 1
