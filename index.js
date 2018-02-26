@@ -29,8 +29,9 @@ class BooleanOp {
     }
 
     static subtract(polygon1, polygon2) {
-        let wrk_poly = polygon2.reverse();
-        let res_poly = BooleanOp.booleanOpBinary(polygon1, wrk_poly, Flatten.BOOLEAN_SUBTRACT);
+        let wrk_poly = polygon2.clone();
+        let wrk_poly_reversed = wrk_poly.reverse();
+        let res_poly = BooleanOp.booleanOpBinary(polygon1, wrk_poly_reversed, Flatten.BOOLEAN_SUBTRACT);
         return res_poly;
     }
 
