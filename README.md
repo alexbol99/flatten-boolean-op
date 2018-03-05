@@ -7,9 +7,9 @@
 Flatten-boolean-op is a javascript library performing fast and reliable boolean operations on polygons.
 It supports following boolean operations on polygons:
 
-* [unify]<https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.unify> 
-* [intersect]<https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.intersect>
-* [subtract]<https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.subtract>
+* [unify](https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.unify) 
+* [intersect](https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.intersect)
+* [subtract](https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.subtract)
 
 Polygon is actually a multi-polygon which is comprised from a number of faces. The orientation of faces (clockwise or counterclockwise) is matter,
 because algorithm implemented in the way that it never changes an original direction of the edge. For the boolean operation to be performed correctly,
@@ -163,6 +163,10 @@ Then intersection points are sorted by arc length.
 Remember that algorithm relies on the direction of the edges. It can find continuation of the interrupted chain only if edge from the second polygon
 is an precise continuation of the edge from the first one. That is why faces that have same meaning (island or hole) should have same orientation
 is both polygons.
+
+## Documentation
+
+Documentation may be found here <https://alexbol99.github.io/flatten-boolean-op/index.html>
 
 
  
