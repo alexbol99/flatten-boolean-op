@@ -1,7 +1,7 @@
 # Boolean operations on polygons
 
 Flatten-boolean-op is a javascript library performing fast and reliable boolean operations on polygons.
-It supports all basic operations on polygons:
+It supports following boolean operations on polygons:
 
 * unify
 * intersect
@@ -10,27 +10,27 @@ It supports all basic operations on polygons:
 Polygon is actually a multi-polygon which is comprised from a number of faces. The orientation of faces (clockwise or counterclockwise) is matter,
 because algorithm implemented in the way that it never changes an original direction of the edge. For the boolean operation to be performed correctly,
 faces have to fit the following rules:
-1) Each face is a non-degenerated simple closed polygon. In another words, face should not have self-intersections and its orientation could be strictly defined
-to be ``Flatten.ORIENTATION.CW`` or ``Flatten.ORIENTATION.CCW``.
+1) Each face is a non-degenerated simple closed polygon. In another words, face should not have self-intersections and its orientation may be strictly defined.
 2) If one face is totally inside another face, its orientation should be opposite to the orientation of external face.
-Then we will call external face **island** and internal face **hole**.
+Then we will call external faces **islands** and internal faces **holes**.
 So the rule is "no island inside island and no hole inside hole".
-3) Faces of polygon should not overlap each other
+3) Faces of the polygon should not overlap each other
 
-Current implementation does not check that polygon fit these rules, this is on the responsibility of the caller.
+Bollean operation algorithm does not check that polygon fits these rules, this is on the responsibility of the caller.
 
 The result of boolean operation is also a polygon.
-  
+Note, that the resulted polygon may be empty, for example as the result of the intersection between two disjoint polygons.
+                                                     
 ## Dependencies
 
-Flatten-boolean-op depends on the **flatten-js** 2d geometry library.
+Flatten-boolean-op depends on the **flatten-js 2d geometry library**.
 This library provides **Polygon** class definition together with the methods to treat faces and edges.<br/>
 Explore this library at <https://github.com/alexbol99/flatten-js> and see more useful classes and methods.
 
 
 ## Usage
 
-Your can choose either to install package in your project or to consume it as a serice.
+Your can choose either to install package in your project or to consume algorithm as a serice.
 
 ### Install in your project
 
@@ -57,14 +57,12 @@ Then require package in your module, define polygons using flatten-js library an
     let poly2 = new Polygon();
     poly2.addFace([point(100, 20), point(200, 20), point(200, 40), point(100, 40)]);
     
-    // apply boolean operation union
+    // apply boolean operation "unify"
     let poly = unify(poly1, poly2);   
     
     console.log(poly.faces.size);           // expected 1
     console.log(poly.edges.size);           // expected 8
 ```
-
-Note: the resulted polygon may be empty, for example as the result of the intersection between two disjoint polygons. In this case the result will be polygon with empty set of faces.
 
 ## Consume as a service
 
@@ -87,7 +85,7 @@ Instead of intalling package in your project you may choose to consume it as a s
 - Define input, call `.algo` method to define query and use `.pipe` to attach input to the query
 
 Algorithm accepts input as an array to 3 elements: two polygon operands and boolean operation code. 
-Polygon operand is JSON object, which is array of arrays if edges, representing each face.
+Polygon operand is JSON object, which is array of arrays of edges, representing each face.
 Polygon JSON object may be obtained using build-in `polygon.toJSON()` method.<br/>
 Algorithmia client calls JSON.serialize(), submits query to the algorithmia server and returns promise.
 Boolean operation code is one of `Flatten.BOOLEAN_UNION, Flatten.BOOLEAN_SUBTRACT, Flatten.BOOLEAN_INTERSECT` constants.  
