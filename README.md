@@ -1,13 +1,15 @@
 [![npm version](https://badge.fury.io/js/flatten-boolean-op.svg)](https://badge.fury.io/js/flatten-boolean-op)
+[![Build Status](https://travis-ci.org/alexbol99/flatten-boolean-op.svg?branch=master)](https://travis-ci.org/alexbol99/flatten-boolean-op)
+[![Coverage Status](https://coveralls.io/repos/github/alexbol99/flatten-boolean-op/badge.svg?branch=master)](https://coveralls.io/github/alexbol99/flatten-boolean-op?branch=master)
 
 # Boolean operations on polygons
 
 Flatten-boolean-op is a javascript library performing fast and reliable boolean operations on polygons.
 It supports following boolean operations on polygons:
 
-* unify
-* intersect
-* subtract
+* [unify]<https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.unify> 
+* [intersect]<https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.intersect>
+* [subtract]<https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.subtract>
 
 Polygon is actually a multi-polygon which is comprised from a number of faces. The orientation of faces (clockwise or counterclockwise) is matter,
 because algorithm implemented in the way that it never changes an original direction of the edge. For the boolean operation to be performed correctly,
