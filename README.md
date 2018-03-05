@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/flatten-boolean-op.svg)](https://badge.fury.io/js/flatten-boolean-op)
+
 # Boolean operations on polygons
 
 Flatten-boolean-op is a javascript library performing fast and reliable boolean operations on polygons.
