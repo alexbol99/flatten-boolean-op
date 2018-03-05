@@ -3,13 +3,15 @@
  */
 "use strict";
 let Flatten = require("flatten-js");
-let {Point, Segment, Arc, Circle, Line, Ray, Vector} = Flatten;
-let {Polygon, Face, Edge} = Flatten;
+let {Polygon} = Flatten;
 
 const NOT_VERTEX = 0;
 const START_VERTEX = 1;
 const END_VERTEX = 2;
 
+/**
+ * Class BooleanOp implements boolean operations on polygons
+ */
 class BooleanOp {
     static booleanOp(operands) {
         let res_poly = new Polygon();
@@ -23,11 +25,25 @@ class BooleanOp {
         return BooleanOp.clip(res_poly, wrk_poly, op);
     }
 
-    static union(polygon1, polygon2) {
+    /**
+     * Unify two polygons polygons and returns new polygon. <br/>
+     * Point belongs to the resulted polygon if it belongs to the first OR to the second polygon
+     * @param {Flatten.Polygon} polygon1 - first operand
+     * @param {Flatten.Polygon} polygon2 - second operand
+     * @returns {Flatten.Polygon}
+     */
+    static unify(polygon1, polygon2) {
         let res_poly = BooleanOp.booleanOpBinary(polygon1, polygon2, Flatten.BOOLEAN_UNION);
         return res_poly;
     }
 
+    /**
+     * Subtract second polygon from the first and returns new polygon
+     * Point belongs to the resulted polygon if it belongs to the first polygon AND NOT to the second polygon
+     * @param {Flatten.Polygon} polygon1 - first operand
+     * @param {Flatten.Polygon} polygon2 - second operand
+     * @returns {Flatten.Polygon}
+     */
     static subtract(polygon1, polygon2) {
         let wrk_poly = polygon2.clone();
         let wrk_poly_reversed = wrk_poly.reverse();
@@ -35,6 +51,13 @@ class BooleanOp {
         return res_poly;
     }
 
+    /**
+     * Intersect two polygons and returns new polygon
+     * Point belongs to the resultes polygon is it belongs to the first AND to the second polygon
+     * @param {Flatten.Polygon} polygon1 - first operand
+     * @param {Flatten.Polygon} polygon2 - second operand
+     * @returns {Flatten.Polygon}
+     */
     static intersect(polygon1, polygon2) {
         let res_poly = BooleanOp.booleanOpBinary(polygon1, polygon2, Flatten.BOOLEAN_INTERSECT);
         return res_poly;
