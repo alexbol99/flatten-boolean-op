@@ -6,7 +6,7 @@
 
 let expect = require('chai').expect;
 let Flatten = require('flatten-js');
-let BooleanOp = require('./index');
+let BooleanOp = require('../index');
 // let now = require("performance-now");
 
 let {Polygon} = Flatten;
