@@ -5,8 +5,10 @@
 'use strict';
 
 let expect = require('chai').expect;
-let Flatten = require('flatten-js');
+// let Flatten = require('flatten-js');
+let Flatten = require("flatten-js/dist/flatten.min");
 let BooleanOp = require('../index');
+// let BooleanOp = require('../dist/flatten-boolean-op.test.min');
 // let now = require("performance-now");
 
 let {Polygon} = Flatten;
@@ -101,6 +103,7 @@ describe('#Algorithms.Boolean Operations', function () {
             "use strict";
             let poly1 = new Polygon();
             poly1.addFace([point(0, 0), point(50, 0), point(50, 30), point(0, 30)]);
+            expect([...poly1.edges][0].shape instanceof Flatten.Segment).to.be.true;
             let poly2 = new Polygon();
             poly2.addFace([point(25, 0), point(50, 0), point(50, 15), point(25, 15)]);
             let poly = unify(poly1, poly2);

@@ -2,8 +2,9 @@
  * Created by Alex Bol on 12/02/2018.
  */
 "use strict";
-let Flatten = require("flatten-js");
-let {Polygon} = Flatten;
+// let Flatten = require("flatten-js");
+let Flatten = require("flatten-js/dist/flatten.min");
+let {Polygon, Segment, Arc} = Flatten;
 
 const NOT_VERTEX = 0;
 const START_VERTEX = 1;
@@ -245,6 +246,7 @@ class BooleanOp {
     }
 
     static splitByIntersections(polygon, int_points) {
+        let {Polygon, Segment, Arc} = Flatten;
         if (!int_points) return;
         for (let int_point of int_points) {
             let edge = int_point.edge_before;
@@ -458,7 +460,7 @@ class BooleanOp {
 
     static edge2edgeOverlappingFlag(shape1, shape2) {
         let flag = undefined;
-        if (shape1 instanceof Flatten.Segment && shape2 instanceof Flatten.Segment) {
+        if (shape1 instanceof Segment && shape2 instanceof Segment) {
             if (shape1.start.equalTo(shape2.start) && shape1.end.equalTo(shape2.end)) {
                 flag = Flatten.OVERLAP_SAME;
             }
@@ -466,7 +468,7 @@ class BooleanOp {
                 flag = Flatten.OVERLAP_OPPOSITE;
             }
         }
-        else if (shape1 instanceof Flatten.Arc && shape2 instanceof Flatten.Arc) {
+        else if (shape1 instanceof Arc && shape2 instanceof Arc) {
             if (shape1.start.equalTo(shape2.start) && shape1.end.equalTo(shape2.end) && shape1.counterClockwise === shape2.counterClockwise &&
                 shape1.middle().equalTo(shape2.middle())) {
                 flag = Flatten.OVERLAP_SAME;
@@ -476,8 +478,8 @@ class BooleanOp {
                 flag = Flatten.OVERLAP_OPPOSITE;
             }
         }
-        else if (shape1 instanceof Flatten.Segment && shape2 instanceof Flatten.Arc ||
-            shape1 instanceof Flatten.Arc && shape2 instanceof Flatten.Segment) {
+        else if (shape1 instanceof Segment && shape2 instanceof Arc ||
+            shape1 instanceof Arc && shape2 instanceof Segment) {
             if (shape1.start.equalTo(shape2.start) && shape1.end.equalTo(shape2.end) && shape1.middle().equalTo(shape2.middle())) {
                 flag = Flatten.OVERLAP_SAME;
             }
