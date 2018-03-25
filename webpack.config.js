@@ -4,9 +4,9 @@ const config = {
     entry: './index.js',
     output: {
         library: "flatten-boolean-op",
-        libraryTarget: "commonjs2",
+        libraryTarget: "umd",
         path: path.resolve(__dirname, 'dist'),
-        filename: 'flatten-boolean-op.min.js'
+        filename: 'flatten-boolean-op.umd.min.js'
     },
     module: {
         rules: [
