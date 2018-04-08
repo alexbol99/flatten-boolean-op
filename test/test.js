@@ -286,6 +286,26 @@ describe('#Algorithms.Boolean Operations', function () {
             expect(poly.faces.size).to.equal(2);
             expect(poly.edges.size).to.equal(8);
         });
+        it('Can perform subtract. 2 intersecting polygons produce 2-island result', function () {
+            "use strict";
+
+            let {Polygon, point} = Flatten;
+
+            let polygon1 = new Polygon();
+            polygon1.addFace([point(100, 10), point(100, 300), point(400, 150), point(250, 10)]);
+
+            let polygon2 = new Polygon();
+            polygon2.addFace([point(450, 10), point(0, 150), point(300, 300), point(600, 300)]);
+
+            let poly;
+            poly = subtract(polygon1, polygon2);
+            expect(poly.faces.size).to.equal(2);
+            expect(poly.edges.size).to.equal(7);
+
+            poly = subtract(polygon2, polygon1);
+            expect(poly.faces.size).to.equal(2);
+            expect(poly.edges.size).to.equal(9);
+        });
     });
     describe('#Algorithms.Boolean Intersection', function () {
         it('Can perform (boolean) intersection. 2 intersecting polygons', function () {
@@ -311,6 +331,22 @@ describe('#Algorithms.Boolean Operations', function () {
             expect(poly.faces.size).to.equal(1);
             expect(poly.edges.size).to.equal(4);
             expect([...poly.faces][0].size).to.equal(4);
+        });
+        it('Can perform (boolean) intersection. Other 2 intersecting polygons', function () {
+            "use strict";
+
+            let {Polygon, point} = Flatten;
+
+            let polygon1 = new Polygon();
+            polygon1.addFace([point(100, 10), point(100, 300), point(400, 150), point(250, 10)]);
+
+            let polygon2 = new Polygon();
+            polygon2.addFace([point(450, 10), point(0, 150), point(300, 300), point(600, 300)]);
+
+            let poly = intersect(polygon1, polygon2);
+            expect(poly.faces.size).to.equal(1);
+            expect(poly.edges.size).to.equal(5);
+            expect([...poly.faces][0].size).to.equal(5);
         });
     });
 });
