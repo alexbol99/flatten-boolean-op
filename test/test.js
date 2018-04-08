@@ -5,10 +5,10 @@
 'use strict';
 
 let expect = require('chai').expect;
-// let Flatten = require('flatten-js');
-let Flatten = require("flatten-js/dist/flatten.min");
+let Flatten = require('flatten-js');
+// let Flatten = require("flatten-js/dist/flatten.min");
 let BooleanOp = require('../index');
-// let BooleanOp = require('../dist/flatten-boolean-op.test.min');
+// let BooleanOp = require('../dist/flatten-boolean-op.min');
 // let now = require("performance-now");
 
 let {Polygon} = Flatten;

@@ -451,44 +451,45 @@ class BooleanOp {
                 continue;                           // not an overlapping chain - skip   TODO: fix boundary conflict
 
             // Set overlapping flag - one-to-one case
-            let flag = BooleanOp.edge2edgeOverlappingFlag(edge_from1.shape, edge_from2.shape);
-            /* Do not update overlap flag if already set on previous chain */
-            if (edge_from1.overlap === undefined) edge_from1.overlap = flag;
-            if (edge_from2.overlap === undefined) edge_from2.overlap = flag;
+            // let flag = BooleanOp.edge2edgeOverlappingFlag(edge_from1.shape, edge_from2.shape);
+            edge_from1.setOverlap(edge_from2);
+
+            // if (edge_from1.overlap === undefined) edge_from1.overlap = flag;
+            // if (edge_from2.overlap === undefined) edge_from2.overlap = flag;
         }
     }
 
-    static edge2edgeOverlappingFlag(shape1, shape2) {
-        let flag = undefined;
-        if (shape1 instanceof Segment && shape2 instanceof Segment) {
-            if (shape1.start.equalTo(shape2.start) && shape1.end.equalTo(shape2.end)) {
-                flag = Flatten.OVERLAP_SAME;
-            }
-            else if (shape1.start.equalTo(shape2.end) && shape1.end.equalTo(shape2.start)) {
-                flag = Flatten.OVERLAP_OPPOSITE;
-            }
-        }
-        else if (shape1 instanceof Arc && shape2 instanceof Arc) {
-            if (shape1.start.equalTo(shape2.start) && shape1.end.equalTo(shape2.end) && shape1.counterClockwise === shape2.counterClockwise &&
-                shape1.middle().equalTo(shape2.middle())) {
-                flag = Flatten.OVERLAP_SAME;
-            }
-            else if (shape1.start.equalTo(shape2.end) && shape1.end.equalTo(shape2.start) && shape1.counterClockwise !== shape2.counterClockwise &&
-                shape1.middle().equalTo(shape2.middle())) {
-                flag = Flatten.OVERLAP_OPPOSITE;
-            }
-        }
-        else if (shape1 instanceof Segment && shape2 instanceof Arc ||
-            shape1 instanceof Arc && shape2 instanceof Segment) {
-            if (shape1.start.equalTo(shape2.start) && shape1.end.equalTo(shape2.end) && shape1.middle().equalTo(shape2.middle())) {
-                flag = Flatten.OVERLAP_SAME;
-            }
-            else if (shape1.start.equalTo(shape2.end) && shape1.end.equalTo(shape2.start) && shape1.middle().equalTo(shape2.middle())) {
-                flag = Flatten.OVERLAP_OPPOSITE;
-            }
-        }
-        return flag;
-    }
+    // static edge2edgeOverlappingFlag(shape1, shape2) {
+    //     let flag = undefined;
+    //     if (shape1 instanceof Segment && shape2 instanceof Segment) {
+    //         if (shape1.start.equalTo(shape2.start) && shape1.end.equalTo(shape2.end)) {
+    //             flag = Flatten.OVERLAP_SAME;
+    //         }
+    //         else if (shape1.start.equalTo(shape2.end) && shape1.end.equalTo(shape2.start)) {
+    //             flag = Flatten.OVERLAP_OPPOSITE;
+    //         }
+    //     }
+    //     else if (shape1 instanceof Arc && shape2 instanceof Arc) {
+    //         if (shape1.start.equalTo(shape2.start) && shape1.end.equalTo(shape2.end) && shape1.counterClockwise === shape2.counterClockwise &&
+    //             shape1.middle().equalTo(shape2.middle())) {
+    //             flag = Flatten.OVERLAP_SAME;
+    //         }
+    //         else if (shape1.start.equalTo(shape2.end) && shape1.end.equalTo(shape2.start) && shape1.counterClockwise !== shape2.counterClockwise &&
+    //             shape1.middle().equalTo(shape2.middle())) {
+    //             flag = Flatten.OVERLAP_OPPOSITE;
+    //         }
+    //     }
+    //     else if (shape1 instanceof Segment && shape2 instanceof Arc ||
+    //         shape1 instanceof Arc && shape2 instanceof Segment) {
+    //         if (shape1.start.equalTo(shape2.start) && shape1.end.equalTo(shape2.end) && shape1.middle().equalTo(shape2.middle())) {
+    //             flag = Flatten.OVERLAP_SAME;
+    //         }
+    //         else if (shape1.start.equalTo(shape2.end) && shape1.end.equalTo(shape2.start) && shape1.middle().equalTo(shape2.middle())) {
+    //             flag = Flatten.OVERLAP_OPPOSITE;
+    //         }
+    //     }
+    //     return flag;
+    // }
 
     static removeNotRelevantChains(polygon, op, int_points, is_res_polygon) {
         if (!int_points) return;
