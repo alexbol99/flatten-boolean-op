@@ -231,6 +231,24 @@ describe('#Algorithms.Boolean Operations', function () {
             expect(poly.faces.size).to.equal(1);
             expect(poly.edges.size).to.equal(4);
         });
+        it('Can perform unify. 2 polygons create one triangular hole after unify', function () {
+            "use strict";
+
+            let polygon1 = new Polygon();
+            polygon1.addFace([point(100,10), point(100, 300), point(350, 300),point(150, 150), point(350, 10)]);
+
+            let polygon2 = new Polygon();
+            polygon2.addFace([point(400, 10), point(300, 10), point(300,300), point(400, 300)]);
+
+
+            let poly = unify(polygon1, polygon2);
+            expect(poly.faces.size).to.equal(2);
+            expect([...poly.faces][0].size).to.equal(8);
+            expect([...poly.faces][0].orientation()).to.equal(Flatten.ORIENTATION.CW);
+            expect([...poly.faces][1].size).to.equal(3);
+            expect([...poly.faces][1].orientation()).to.equal(Flatten.ORIENTATION.CCW);
+            expect(poly.edges.size).to.equal(11);
+        });
     });
     describe('#Algorithms.Boolean Subtraction', function () {
         it('Can perform subtract. 2 intersecting polygons', function () {

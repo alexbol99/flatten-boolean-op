@@ -406,7 +406,7 @@ class BooleanOp {
 
             // Find boundary chain in the polygon1
             if (cur_int_point1.face !== cur_face) {                               // next chain started
-                first_int_point_in_face = i;
+                first_int_point_in_face = cur_int_point1;
                 cur_face = cur_int_point1.face;
             }
 
