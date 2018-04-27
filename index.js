@@ -96,8 +96,8 @@ class BooleanOp {
         // remove not relevant not intersected faces from res_polygon
         // if op == UNION, remove faces that are included in wrk_polygon without intersection
         // if op == INTERSECT, remove faces that are not included into wrk_polygon
-        BooleanOp.removeNotRelevantNotIntersectedFaces(res_poly, wrk_poly, op, intersections.int_points1);
-        BooleanOp.removeNotRelevantNotIntersectedFaces(wrk_poly, res_poly, op, intersections.int_points2);
+        BooleanOp.removeNotRelevantNotIntersectedFaces(res_poly, wrk_poly, op, intersections.int_points1, true);
+        BooleanOp.removeNotRelevantNotIntersectedFaces(wrk_poly, res_poly, op, intersections.int_points2, false);
 
         // initialize inclusion flags for edges incident to intersections
         BooleanOp.initializeInclusionFlags(intersections.int_points1);
@@ -351,12 +351,15 @@ class BooleanOp {
         }
     }
 
-    static removeNotRelevantNotIntersectedFaces(poly1, poly2, op, int_points1) {
+    static removeNotRelevantNotIntersectedFaces(poly1, poly2, op, int_points1, is_res_polygon) {
         let toBeDeleted = [];
         for (let face of poly1.faces) {
             if (!int_points1.find((ip) => ip.face === face)) {
                 let rel = face.getRelation(poly2);
                 if (op === Flatten.BOOLEAN_UNION && rel === Flatten.INSIDE) {
+                    toBeDeleted.push(face);
+                }
+                else if (op === Flatten.BOOLEAN_SUBTRACT && rel === Flatten.INSIDE && is_res_polygon) {
                     toBeDeleted.push(face);
                 }
                 else if (op === Flatten.BOOLEAN_INTERSECT && rel === Flatten.OUTSIDE) {
