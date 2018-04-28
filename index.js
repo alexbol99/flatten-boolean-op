@@ -457,7 +457,7 @@ class BooleanOp {
             edge_from1.setOverlap(edge_from2);
         }
     }
-
+/*
     static removeNotRelevantChains(polygon, op, int_points, is_res_polygon) {
         if (!int_points) return;
         for (let i = 0; i < int_points.length; i++) {
@@ -496,6 +496,100 @@ class BooleanOp {
             }
         }
     };
+*/
+    static removeNotRelevantChains(polygon, op, int_points, is_res_polygon) {
+        if (!int_points) return;
+        let cur_face = undefined;
+        let first_int_point_in_face_num = undefined;
+        let int_point_current;
+        let int_point_next;
+
+        for (let i = 0; i < int_points.length; i++) {
+            int_point_current = int_points[i];
+
+            if (int_point_current.face !== cur_face) {   // next face started
+                first_int_point_in_face_num = i;
+                cur_face = int_point_current.face;
+            }
+
+            if (cur_face.isEmpty())                // ??
+                continue;
+
+            // Get next int point from the same face that current
+
+            // Count how many duplicated points with same <x,y> in "points from" pull ?
+            let int_points_from_pull_start = i;
+            let int_points_from_pull_num = BooleanOp.intPointsPullCount(int_points, i, cur_face);
+            let next_int_point_num;
+            if (int_points_from_pull_start + int_points_from_pull_num < int_points.length &&
+                int_points[int_points_from_pull_start + int_points_from_pull_num].face === int_point_current.face) {
+                next_int_point_num = int_points_from_pull_start + int_points_from_pull_num;
+            }
+            else {                                         // get first point from the same face
+                next_int_point_num = first_int_point_in_face_num;
+            }
+            int_point_next = int_points[next_int_point_num];
+
+            /* Count how many duplicated points with same <x,y> in "points to" pull ? */
+            let int_points_to_pull_start = next_int_point_num;
+            let int_points_to_pull_num = BooleanOp.intPointsPullCount(int_points, int_points_to_pull_start, cur_face);
+
+
+            let edge_from = int_point_current.edge_after;
+            let edge_to = int_point_next.edge_before;
+
+            if ((edge_from.bv === Flatten.INSIDE && edge_to.bv === Flatten.INSIDE && op === Flatten.BOOLEAN_UNION) ||
+                (edge_from.bv === Flatten.OUTSIDE && edge_to.bv === Flatten.OUTSIDE && op === Flatten.BOOLEAN_INTERSECT) ||
+                ((edge_from.bv === Flatten.OUTSIDE || edge_to.bv === Flatten.OUTSIDE) && op === Flatten.BOOLEAN_SUBTRACT && !is_res_polygon) ||
+                ((edge_from.bv === Flatten.INSIDE || edge_to.bv === Flatten.INSIDE) && op === Flatten.BOOLEAN_SUBTRACT && is_res_polygon) ||
+                (edge_from.bv === Flatten.BOUNDARY && edge_to.bv === Flatten.BOUNDARY && (edge_from.overlap & Flatten.OVERLAP_SAME) && is_res_polygon) ||
+                (edge_from.bv === Flatten.BOUNDARY && edge_to.bv === Flatten.BOUNDARY && (edge_from.overlap & Flatten.OVERLAP_OPPOSITE))) {
+
+                polygon.removeChain(cur_face, edge_from, edge_to);
+
+                /* update all points in "points from" pull */
+                for (let k=int_points_from_pull_start; k < int_points_from_pull_start+int_points_from_pull_num; k++) {
+                    int_point_current.edge_after = undefined;
+                }
+
+                /* update all points in "points to" pull */
+                for (let k=int_points_to_pull_start; k < int_points_to_pull_start+int_points_to_pull_num; k++) {
+                    int_point_next.edge_before = undefined;
+                }
+            }
+
+            /* skip to the last point in "points from" group */
+            i += int_points_from_pull_num-1;
+        }
+    };
+
+    static intPointsPullCount(int_points, cur_int_point_num, cur_face) {
+        let int_point_current;
+        let int_point_next;
+
+        let int_points_pull_num = 1;
+
+        if (int_points.length == 1) return 1;
+
+        int_point_current = int_points[cur_int_point_num];
+
+        for (let i = cur_int_point_num + 1; i < int_points.length; i++) {
+            if (int_point_current.face != cur_face) {      /* next face started */
+                break;
+            }
+
+            int_point_next = int_points[i];
+
+            if (!(int_point_next.pt.equalTo(int_point_current.pt) &&
+                int_point_next.edge_before === int_point_current.edge_before &&
+                int_point_next.edge_after === int_point_current.edge_after)) {
+                break;         /* next point is different - break and exit */
+            }
+
+            int_points_pull_num++;     /* duplicated intersection point - increase counter */
+        }
+        return int_points_pull_num;
+    }
 
     static copyWrkToRes(res_polygon, wrk_polygon, op, int_points) {
         for (let face of wrk_polygon.faces) {
@@ -597,14 +691,14 @@ class BooleanOp {
     }
 
     static restoreFaces(polygon, int_points, other_int_points) {
-        // For each intersection point - create new chain
+        // For each intersection point - create new face
         for (let int_point of int_points) {
             if (int_point.edge_before === undefined || int_point.edge_after === undefined)  // completely deleted
                 continue;
             if (int_point.face)            // already restored
                 continue;
 
-            if (int_point.edge_after.face || int_point.edge_before.face)        // Chain already created. Possible case in duplicated intersection points
+            if (int_point.edge_after.face || int_point.edge_before.face)        // Face already created. Possible case in duplicated intersection points
                 continue;
 
             let first = int_point.edge_after;      // face start
@@ -614,7 +708,7 @@ class BooleanOp {
 
             // Mark intersection points from the newly create face
             // to avoid multiple creation of the same face
-            // Chain number was assigned to each edge of new face in addFace function
+            // Face was assigned to each edge of new face in addFace function
             for (let int_point_tmp of int_points) {
                 if (int_point_tmp.edge_before && int_point_tmp.edge_after &&
                     int_point_tmp.edge_before.face === face && int_point_tmp.edge_after.face === face) {

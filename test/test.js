@@ -53,14 +53,14 @@ describe('#Algorithms.Boolean Operations', function () {
                 expect(face.size).to.equal(8);
             }
             let vertices = poly.vertices;
-            expect(vertices.find((pt) => pt.equalTo(point(0, 0)))).to.be.defined;
-            expect(vertices.find((pt) => pt.equalTo(point(150, 0)))).to.be.defined;
+            expect(vertices.find((pt) => pt.equalTo(point(0, 0)))).not.to.be.undefined;
+            expect(vertices.find((pt) => pt.equalTo(point(150, 0)))).not.to.be.undefined;
             expect(vertices.find((pt) => pt.equalTo(point(150, 30)))).to.be.undefined;
-            expect(vertices.find((pt) => pt.equalTo(point(0, 30)))).to.be.defined;
+            expect(vertices.find((pt) => pt.equalTo(point(0, 30)))).not.to.be.undefined;
             expect(vertices.find((pt) => pt.equalTo(point(100, 20)))).to.be.undefined;
-            expect(vertices.find((pt) => pt.equalTo(point(200, 20)))).to.be.defined;
-            expect(vertices.find((pt) => pt.equalTo(point(200, 40)))).to.be.defined;
-            expect(vertices.find((pt) => pt.equalTo(point(100, 40)))).to.be.defined;
+            expect(vertices.find((pt) => pt.equalTo(point(200, 20)))).not.to.be.undefined;
+            expect(vertices.find((pt) => pt.equalTo(point(200, 40)))).not.to.be.undefined;
+            expect(vertices.find((pt) => pt.equalTo(point(100, 40)))).not.to.be.undefined;
         });
         it('Can perform unify. 2 polygons, disjoint', function () {
             "use strict";
