@@ -18,7 +18,6 @@
     "geometry",
     "polygon",
     "contour",
-    "boolean",
     "boolean operations",
     "union",
     "intersection",
