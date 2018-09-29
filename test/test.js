@@ -324,6 +324,23 @@ describe('#Algorithms.Boolean Operations', function () {
             expect(poly.faces.size).to.equal(2);
             expect(poly.edges.size).to.equal(9);
         });
+        // it('Can perform (boolean) subtraction. First polygon inside the second', function () {
+        //     "use strict";
+        //
+        //     let {Polygon, point} = Flatten;
+        //
+        //     let polygon1 = new Polygon();
+        //     polygon1.addFace([point(100, 10), point(100, 300), point(400, 150), point(250, 10)]);
+        //
+        //     let polygon2 = new Polygon();
+        //     polygon2.addFace([point(50, 0), point(50, 400), point(500, 400), point(500, 0)]);
+        //
+        //     let poly = subtract(polygon2, polygon1);
+        //     expect(poly.faces.size).to.equal(2);
+        //     expect(poly.edges.size).to.equal(8);
+        //
+        // });
+
     });
     describe('#Algorithms.Boolean Intersection', function () {
         it('Can perform (boolean) intersection. 2 intersecting polygons', function () {
@@ -365,6 +382,59 @@ describe('#Algorithms.Boolean Operations', function () {
             expect(poly.faces.size).to.equal(1);
             expect(poly.edges.size).to.equal(5);
             expect([...poly.faces][0].size).to.equal(5);
+        });
+        it('Can perform (boolean) intersection. First polygon inside the second', function () {
+            "use strict";
+
+            let {Polygon, point} = Flatten;
+
+            let polygon1 = new Polygon();
+            polygon1.addFace([point(100, 10), point(100, 300), point(400, 150), point(250, 10)]);
+
+            let polygon2 = new Polygon();
+            polygon2.addFace([point(50, 0), point(50, 400), point(500, 400), point(500, 0)]);
+
+            let poly = intersect(polygon1, polygon2);
+            expect(poly.faces.size).to.equal(1);
+            expect(poly.edges.size).to.equal(4);
+            expect([...poly.faces][0].size).to.equal(4);
+        });
+        it("Issue #2", function() {
+            "use strict"
+
+            let {Polygon, segment, arc, point} = Flatten;
+            let {unify, intersect, subtract} = BooleanOp;
+
+            let myPoly = new Polygon();
+            myPoly.addFace([point(50, 50), point(50,950), point(950, 950), point(950, 50)]);
+            // myPoly.addFace([point(50, 50), point(950, 50), point(950, 950), point(50,950)]);
+
+            let myCircle = new Polygon();
+            myCircle.addFace([arc(point(0,1000),980, 0, 2*Math.PI, Flatten.CW)]);
+
+            myPoly = intersect(myPoly, myCircle);
+
+            myCircle = new Polygon();
+            myCircle.addFace([arc(point(0,1000),780, 0, 2*Math.PI, Flatten.CW)]);
+            myPoly = subtract(myPoly, myCircle);
+
+            myCircle = new Polygon();
+            myCircle.addFace([arc(point(1000,1000),1330, 0, 2*Math.PI, Flatten.CW)]);
+            myPoly = intersect(myPoly,myCircle);
+
+            myCircle = new Polygon();
+            myCircle.addFace([arc(point(1000,1000),1130, 0, 2*Math.PI, Flatten.CW)]);
+            myPoly = subtract(myPoly,myCircle);
+
+            myCircle = new Polygon();
+            myCircle.addFace([arc(point(1000,0),980, 0, 2*Math.PI, Flatten.CW)]);
+
+            myPoly = intersect(myPoly, myCircle);
+
+            expect(myPoly.faces.size).to.equal(1);
+            expect(myPoly.edges.size).to.equal(6);
+            expect([...myPoly.faces][0].size).to.equal(6);
+            expect([...myPoly.faces][0].orientation()).to.equal(Flatten.ORIENTATION.CW);
         });
     });
 });

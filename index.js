@@ -34,7 +34,7 @@ class BooleanOp {
      * @returns {Flatten.Polygon}
      */
     static unify(polygon1, polygon2) {
-        let res_poly = BooleanOp.booleanOpBinary(polygon1, polygon2, Flatten.BOOLEAN_UNION);
+        let res_poly = BooleanOp.booleanOpBinary(polygon1, polygon2, BooleanOp.BOOLEAN_UNION);
         return res_poly;
     }
 
@@ -48,7 +48,7 @@ class BooleanOp {
     static subtract(polygon1, polygon2) {
         let wrk_poly = polygon2.clone();
         let wrk_poly_reversed = wrk_poly.reverse();
-        let res_poly = BooleanOp.booleanOpBinary(polygon1, wrk_poly_reversed, Flatten.BOOLEAN_SUBTRACT);
+        let res_poly = BooleanOp.booleanOpBinary(polygon1, wrk_poly_reversed, BooleanOp.BOOLEAN_SUBTRACT);
         return res_poly;
     }
 
@@ -60,7 +60,7 @@ class BooleanOp {
      * @returns {Flatten.Polygon}
      */
     static intersect(polygon1, polygon2) {
-        let res_poly = BooleanOp.booleanOpBinary(polygon1, polygon2, Flatten.BOOLEAN_INTERSECT);
+        let res_poly = BooleanOp.booleanOpBinary(polygon1, polygon2, BooleanOp.BOOLEAN_INTERSECT);
         return res_poly;
     }
 
@@ -355,14 +355,16 @@ class BooleanOp {
         let toBeDeleted = [];
         for (let face of poly1.faces) {
             if (!int_points1.find((ip) => ip.face === face)) {
-                let rel = face.getRelation(poly2);
-                if (op === Flatten.BOOLEAN_UNION && rel === Flatten.INSIDE) {
+                face.first.bv = face.first.bvStart = face.first.bvEnd = undefined;
+                let rel = face.first.setInclusion(poly2);
+                // let rel = face.getRelation(poly2);
+                if (op === BooleanOp.BOOLEAN_UNION && rel === Flatten.INSIDE) {
                     toBeDeleted.push(face);
                 }
-                else if (op === Flatten.BOOLEAN_SUBTRACT && rel === Flatten.INSIDE && is_res_polygon) {
+                else if (op === BooleanOp.BOOLEAN_SUBTRACT && rel === Flatten.INSIDE && is_res_polygon) {
                     toBeDeleted.push(face);
                 }
-                else if (op === Flatten.BOOLEAN_INTERSECT && rel === Flatten.OUTSIDE) {
+                else if (op === BooleanOp.BOOLEAN_INTERSECT && rel === Flatten.OUTSIDE) {
                     toBeDeleted.push(face);
                 }
             }
@@ -457,46 +459,7 @@ class BooleanOp {
             edge_from1.setOverlap(edge_from2);
         }
     }
-/*
-    static removeNotRelevantChains(polygon, op, int_points, is_res_polygon) {
-        if (!int_points) return;
-        for (let i = 0; i < int_points.length; i++) {
-            // TODO: Support claster of duplicated points with same <x,y> came from different faces
 
-            let int_point_current = int_points[i];
-            // Get next int point from the same face that current
-            let int_point_next;
-            if (i < int_points.length - 1 && int_points[i + 1].face === int_point_current.face) {
-                int_point_next = int_points[i + 1];   // get next point from same face
-            }
-            else {                                  // get first point from the same face
-                for (int_point_next of int_points) {
-                    if (int_point_next.face === int_point_current.face) {
-                        break;
-                    }
-                }
-            }
-
-            let edge_from = int_point_current.edge_after;
-            let edge_to = int_point_next.edge_before;
-
-            let face = int_point_current.face;
-
-            if ((edge_from.bv === Flatten.INSIDE && edge_to.bv === Flatten.INSIDE && op === Flatten.BOOLEAN_UNION) ||
-                (edge_from.bv === Flatten.OUTSIDE && edge_to.bv === Flatten.OUTSIDE && op === Flatten.BOOLEAN_INTERSECT) ||
-                ((edge_from.bv === Flatten.OUTSIDE || edge_to.bv === Flatten.OUTSIDE) && op === Flatten.BOOLEAN_SUBTRACT && !is_res_polygon) ||
-                ((edge_from.bv === Flatten.INSIDE || edge_to.bv === Flatten.INSIDE) && op === Flatten.BOOLEAN_SUBTRACT && is_res_polygon) ||
-                (edge_from.bv === Flatten.BOUNDARY && edge_to.bv === Flatten.BOUNDARY && (edge_from.overlap & Flatten.OVERLAP_SAME) && is_res_polygon) ||
-                (edge_from.bv === Flatten.BOUNDARY && edge_to.bv === Flatten.BOUNDARY && (edge_from.overlap & Flatten.OVERLAP_OPPOSITE) )) {
-
-                polygon.removeChain(face, edge_from, edge_to);
-
-                int_point_current.edge_after = undefined;
-                int_point_next.edge_before = undefined;
-            }
-        }
-    };
-*/
     static removeNotRelevantChains(polygon, op, int_points, is_res_polygon) {
         if (!int_points) return;
         let cur_face = undefined;
@@ -538,10 +501,10 @@ class BooleanOp {
             let edge_from = int_point_current.edge_after;
             let edge_to = int_point_next.edge_before;
 
-            if ((edge_from.bv === Flatten.INSIDE && edge_to.bv === Flatten.INSIDE && op === Flatten.BOOLEAN_UNION) ||
-                (edge_from.bv === Flatten.OUTSIDE && edge_to.bv === Flatten.OUTSIDE && op === Flatten.BOOLEAN_INTERSECT) ||
-                ((edge_from.bv === Flatten.OUTSIDE || edge_to.bv === Flatten.OUTSIDE) && op === Flatten.BOOLEAN_SUBTRACT && !is_res_polygon) ||
-                ((edge_from.bv === Flatten.INSIDE || edge_to.bv === Flatten.INSIDE) && op === Flatten.BOOLEAN_SUBTRACT && is_res_polygon) ||
+            if ((edge_from.bv === Flatten.INSIDE && edge_to.bv === Flatten.INSIDE && op === BooleanOp.BOOLEAN_UNION) ||
+                (edge_from.bv === Flatten.OUTSIDE && edge_to.bv === Flatten.OUTSIDE && op === BooleanOp.BOOLEAN_INTERSECT) ||
+                ((edge_from.bv === Flatten.OUTSIDE || edge_to.bv === Flatten.OUTSIDE) && op === BooleanOp.BOOLEAN_SUBTRACT && !is_res_polygon) ||
+                ((edge_from.bv === Flatten.INSIDE || edge_to.bv === Flatten.INSIDE) && op === BooleanOp.BOOLEAN_SUBTRACT && is_res_polygon) ||
                 (edge_from.bv === Flatten.BOUNDARY && edge_to.bv === Flatten.BOUNDARY && (edge_from.overlap & Flatten.OVERLAP_SAME) && is_res_polygon) ||
                 (edge_from.bv === Flatten.BOUNDARY && edge_to.bv === Flatten.BOUNDARY && (edge_from.overlap & Flatten.OVERLAP_OPPOSITE))) {
 
@@ -597,7 +560,7 @@ class BooleanOp {
                 res_polygon.edges.add(edge);
             }
             // If union - add face from wrk_polygon that is not intersected with res_polygon
-            if (op === Flatten.BOOLEAN_UNION &&
+            if (op === BooleanOp.BOOLEAN_UNION &&
                 int_points && int_points.find((ip) => (ip.face === face)) === undefined) {
                 res_polygon.addFace(face.first, face.last);
             }
@@ -725,5 +688,11 @@ class BooleanOp {
         }
     }
 };
+
+BooleanOp.BOOLEAN_UNION = 1;
+BooleanOp.BOOLEAN_INTERSECT = 2;
+BooleanOp.BOOLEAN_SUBTRACT = 3;
+
+BooleanOp.Flatten = Flatten;
 
 module.exports = BooleanOp;
