@@ -48,6 +48,6 @@
     "webpack-cli": "^2.1.5"
   },
   "dependencies": {
-    "flatten-js": "^0.6.4"
+    "flatten-js": "^0.6.6"
   }
 }

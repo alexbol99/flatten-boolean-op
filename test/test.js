@@ -436,5 +436,63 @@ describe('#Algorithms.Boolean Operations', function () {
             expect([...myPoly.faces][0].size).to.equal(6);
             expect([...myPoly.faces][0].orientation()).to.equal(Flatten.ORIENTATION.CW);
         });
+        it("Issue #3", function() {
+            "use strict";
+
+            let {Polygon, segment, arc, point} = Flatten;
+            let {unify, intersect, subtract} = BooleanOp;
+
+            let myPoly = new Polygon();
+            myPoly.addFace([point(6, 6), point(6,114), point(114, 114), point(114, 6)]);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myPoly);  // 0
+
+            let myCircle = new Polygon();
+            myCircle.addFace([arc(point(0,0),84.5779281026111, 0, 2*Math.PI, Flatten.CW)]);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myCircle);  // 1
+
+            myPoly = intersect(myPoly,myCircle);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myPoly);   // 2
+
+            myCircle = new Polygon();
+            myCircle.addFace([arc(point(0,0),84.49938828627135, 0, 2*Math.PI, Flatten.CW)]);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myCircle);  // 3
+
+            myPoly = subtract(myPoly,myCircle);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myPoly);   // 4
+
+            myCircle = new Polygon();
+            myCircle.addFace([arc(point(0,120),84.8710637077582, 0, 2*Math.PI, Flatten.CW)]);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myCircle);  // 5
+
+            myPoly = intersect(myPoly,myCircle);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myPoly);   // 6
+
+            myCircle = new Polygon();
+            myCircle.addFace([arc(point(0,120),84.79252389141845, 0, 2*Math.PI, Flatten.CW)]);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myCircle);  // 7
+
+            myPoly = subtract(myPoly,myCircle);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myPoly);   // 8
+
+            myCircle = new Polygon();
+            myCircle.addFace([arc(point(120,120),85.20624291591454, 0, 2*Math.PI, Flatten.CW)]);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myCircle);  // 9
+
+            myPoly = intersect(myPoly,myCircle);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myPoly);   // 10
+
+            myCircle = new Polygon();
+            myCircle.addFace([arc(point(120,120), 85.1277030995748, 0, 2*Math.PI, Flatten.CW)]);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myCircle);  // 11
+
+            myPoly = subtract(myPoly,myCircle);
+            // state.layers[state.layers.length] = Layers.newLayer(stage, layers).add(myPoly);   // 12
+
+            expect(myPoly.faces.size).to.equal(1);
+            expect(myPoly.edges.size).to.equal(7);
+            expect([...myPoly.faces][0].size).to.equal(7);
+            expect([...myPoly.faces][0].orientation()).to.equal(Flatten.ORIENTATION.CW);
+
+        });
     });
 });
