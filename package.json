@@ -1,6 +1,6 @@
 {
   "name": "flatten-boolean-op",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Boolean operations on polygons",
   "main": "index.js",
   "scripts": {
