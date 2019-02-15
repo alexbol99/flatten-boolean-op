@@ -341,6 +341,20 @@ describe('#Algorithms.Boolean Operations', function () {
         //
         // });
 
+        it('Can perform subtract big polygon from smaller polygon and get empty result (Issue #4)', function() {
+            let polygon1 = new Polygon();
+            polygon1.addFace([point(0,0), point(100, 0), point(100, 100), point(0, 100)]);
+
+            let polygon2 = new Polygon();
+            polygon2.addFace([point(10, 10), point(90, 10), point(90,90), point(10, 90)]);
+
+            // polygon2 is completely inside polygon1, I expect the result polygon to be empty
+            let polygon = subtract(polygon2, polygon1);
+
+            expect(polygon.isEmpty()).to.be.true;
+            expect(polygon.faces.size).to.equal(0);
+            expect(polygon.edges.size).to.equal(0);
+        });
     });
     describe('#Algorithms.Boolean Intersection', function () {
         it('Can perform (boolean) intersection. 2 intersecting polygons', function () {
@@ -399,7 +413,7 @@ describe('#Algorithms.Boolean Operations', function () {
             expect(poly.edges.size).to.equal(4);
             expect([...poly.faces][0].size).to.equal(4);
         });
-        it("Issue #2", function() {
+        it("Issue #2 with intersection of circle and box", function() {
             "use strict"
 
             let {Polygon, segment, arc, point} = Flatten;

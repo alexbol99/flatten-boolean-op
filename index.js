@@ -93,11 +93,13 @@ class BooleanOp {
         // filter duplicated intersection points
         BooleanOp.filterDuplicatedIntersections(intersections);
 
-        // remove not relevant not intersected faces from res_polygon
-        // if op == UNION, remove faces that are included in wrk_polygon without intersection
-        // if op == INTERSECT, remove faces that are not included into wrk_polygon
-        BooleanOp.removeNotRelevantNotIntersectedFaces(res_poly, wrk_poly, op, intersections.int_points1, true);
-        BooleanOp.removeNotRelevantNotIntersectedFaces(wrk_poly, res_poly, op, intersections.int_points2, false);
+        // keep not intersected faces for further remove and merge
+        let notIntersectedFacesRes = BooleanOp.getNotIntersectedFaces(res_poly, intersections.int_points1);
+        let notIntersectedFacesWrk = BooleanOp.getNotIntersectedFaces(wrk_poly, intersections.int_points2);
+
+        // calculate inclusion flag for not intersected faces
+        BooleanOp.calcInclusionForNotIntersectedFaces(notIntersectedFacesRes, wrk_poly);
+        BooleanOp.calcInclusionForNotIntersectedFaces(notIntersectedFacesWrk, res_poly);
 
         // initialize inclusion flags for edges incident to intersections
         BooleanOp.initializeInclusionFlags(intersections.int_points1);
@@ -112,9 +114,15 @@ class BooleanOp {
         // Set overlapping flags for boundary chains: SAME or OPPOSITE
         BooleanOp.setOverlappingFlags(intersections);
 
-        // remove not relevant chains between intersection points
-        BooleanOp.removeNotRelevantChains(res_poly, op, intersections.int_points1_sorted, true);
-        BooleanOp.removeNotRelevantChains(wrk_poly, op, intersections.int_points2_sorted, false);
+        // remove not relevant faces between intersection points
+        BooleanOp.removeNotRelevantFaces(res_poly, op, intersections.int_points1_sorted, true);
+        BooleanOp.removeNotRelevantFaces(wrk_poly, op, intersections.int_points2_sorted, false);
+
+        // remove not relevant not intersected faces from res_polygon and wrk_polygon
+        // if op == UNION, remove faces that are included in wrk_polygon without intersection
+        // if op == INTERSECT, remove faces that are not included into wrk_polygon
+        BooleanOp.removeNotRelevantNotIntersectedFaces(res_poly, notIntersectedFacesRes, op,true);
+        BooleanOp.removeNotRelevantNotIntersectedFaces(wrk_poly, notIntersectedFacesWrk, op,false);
 
         // add edges of wrk_poly into the edge container of res_poly
         BooleanOp.copyWrkToRes(res_poly, wrk_poly, op, intersections.int_points2);
@@ -129,6 +137,9 @@ class BooleanOp {
         // restore faces
         BooleanOp.restoreFaces(res_poly, intersections.int_points1, intersections.int_points2);
         BooleanOp.restoreFaces(res_poly, intersections.int_points2, intersections.int_points1);
+
+        // merge relevant not intersected faces from wrk_polygon to res_polygon
+        // BooleanOp.mergeRelevantNotIntersectedFaces(res_poly, wrk_poly);
 
         return res_poly;
     }
@@ -169,12 +180,10 @@ class BooleanOp {
         if (split.length === 1) {           // Edge was not split
             if (edge.shape.start.equalTo(pt)) {
                 len = 0;
-            }
-            else if (edge.shape.end.equalTo(pt)) {
+            } else if (edge.shape.end.equalTo(pt)) {
                 len = edge.shape.length;
             }
-        }
-        else {                             // Edge was split into to edges
+        } else {                             // Edge was split into to edges
             len = split[0].length;
         }
         let is_vertex = NOT_VERTEX;
@@ -351,26 +360,20 @@ class BooleanOp {
         }
     }
 
-    static removeNotRelevantNotIntersectedFaces(poly1, poly2, op, int_points1, is_res_polygon) {
-        let toBeDeleted = [];
-        for (let face of poly1.faces) {
-            if (!int_points1.find((ip) => ip.face === face)) {
-                face.first.bv = face.first.bvStart = face.first.bvEnd = undefined;
-                let rel = face.first.setInclusion(poly2);
-                // let rel = face.getRelation(poly2);
-                if (op === BooleanOp.BOOLEAN_UNION && rel === Flatten.INSIDE) {
-                    toBeDeleted.push(face);
-                }
-                else if (op === BooleanOp.BOOLEAN_SUBTRACT && rel === Flatten.INSIDE && is_res_polygon) {
-                    toBeDeleted.push(face);
-                }
-                else if (op === BooleanOp.BOOLEAN_INTERSECT && rel === Flatten.OUTSIDE) {
-                    toBeDeleted.push(face);
-                }
+    static getNotIntersectedFaces(poly, int_points) {
+        let notIntersected = [];
+        for (let face of poly.faces) {
+            if (!int_points.find((ip) => ip.face === face)) {
+                notIntersected.push(face);
             }
         }
-        for (let i = 0; i < toBeDeleted.length; i++) {
-            poly1.deleteFace(toBeDeleted[i]);
+        return notIntersected;
+    }
+
+    static calcInclusionForNotIntersectedFaces(notIntersectedFaces, poly2) {
+        for (let face of notIntersectedFaces) {
+            face.first.bv = face.first.bvStart = face.first.bvEnd = undefined;
+            face.first.setInclusion(poly2);
         }
     }
 
@@ -417,11 +420,9 @@ class BooleanOp {
 
             if (i + 1 === num_int_points) {                                         // last int point in array
                 next_int_point1 = first_int_point_in_face;
-            }
-            else if (intersections.int_points1_sorted[i + 1].face !== cur_face) {   // last int point in chain
+            } else if (intersections.int_points1_sorted[i + 1].face !== cur_face) {   // last int point in chain
                 next_int_point1 = first_int_point_in_face;
-            }
-            else {                                                                // not a last point in chain
+            } else {                                                                // not a last point in chain
                 next_int_point1 = intersections.int_points1_sorted[i + 1];
             }
 
@@ -460,7 +461,7 @@ class BooleanOp {
         }
     }
 
-    static removeNotRelevantChains(polygon, op, int_points, is_res_polygon) {
+    static removeNotRelevantFaces(polygon, op, int_points, is_res_polygon) {
         if (!int_points) return;
         let cur_face = undefined;
         let first_int_point_in_face_num = undefined;
@@ -487,8 +488,7 @@ class BooleanOp {
             if (int_points_from_pull_start + int_points_from_pull_num < int_points.length &&
                 int_points[int_points_from_pull_start + int_points_from_pull_num].face === int_point_current.face) {
                 next_int_point_num = int_points_from_pull_start + int_points_from_pull_num;
-            }
-            else {                                         // get first point from the same face
+            } else {                                         // get first point from the same face
                 next_int_point_num = first_int_point_in_face_num;
             }
             int_point_next = int_points[next_int_point_num];
@@ -511,18 +511,18 @@ class BooleanOp {
                 polygon.removeChain(cur_face, edge_from, edge_to);
 
                 /* update all points in "points from" pull */
-                for (let k=int_points_from_pull_start; k < int_points_from_pull_start+int_points_from_pull_num; k++) {
+                for (let k = int_points_from_pull_start; k < int_points_from_pull_start + int_points_from_pull_num; k++) {
                     int_point_current.edge_after = undefined;
                 }
 
                 /* update all points in "points to" pull */
-                for (let k=int_points_to_pull_start; k < int_points_to_pull_start+int_points_to_pull_num; k++) {
+                for (let k = int_points_to_pull_start; k < int_points_to_pull_start + int_points_to_pull_num; k++) {
                     int_point_next.edge_before = undefined;
                 }
             }
 
             /* skip to the last point in "points from" group */
-            i += int_points_from_pull_num-1;
+            i += int_points_from_pull_num - 1;
         }
     };
 
@@ -687,6 +687,27 @@ class BooleanOp {
             }
         }
     }
+
+    static removeNotRelevantNotIntersectedFaces(polygon, notIntersectedFaces, op, is_res_polygon) {
+        for (let face of notIntersectedFaces) {
+            let rel = face.first.bv;
+            if (op === BooleanOp.BOOLEAN_UNION && rel === Flatten.INSIDE ||
+                op === BooleanOp.BOOLEAN_SUBTRACT && rel === Flatten.INSIDE && is_res_polygon ||
+                op === BooleanOp.BOOLEAN_SUBTRACT && rel === Flatten.OUTSIDE && !is_res_polygon ||
+                op === BooleanOp.BOOLEAN_INTERSECT && rel === Flatten.OUTSIDE) {
+
+                polygon.deleteFace(face);
+            }
+        }
+    }
+
+    static mergeRelevantNotIntersectedFaces(res_polygon, wrk_polygon) {
+        // All not relevant faces should be already deleted from wrk_polygon
+        for (let face of wrk_polygon.faces) {
+            res_polygon.addFace(face);
+        }
+    }
+
 };
 
 BooleanOp.BOOLEAN_UNION = 1;
