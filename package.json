@@ -54,6 +54,7 @@
     "rollup-plugin-node-resolve": "^4.0.0"
   },
   "dependencies": {
+    "@flatten-js/core": "^1.0.5",
     "@flatten-js/utils": "^1.0.0"
   }
 }
