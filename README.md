@@ -24,6 +24,14 @@ Bollean operation algorithm does not check that polygon fits these rules, this i
 
 The result of boolean operation is also a polygon.
 Note, that the resulted polygon may be empty, for example as the result of the intersection between two disjoint polygons.
+
+## Important note
+
+#### This package is not supported and will be deprecated soon. Consider moving to the scoped version [@flatten-js/boolean-op](https://www.npmjs.com/package/@flatten-js/boolean-op).
+
+## Contacts
+
+Follow me on Twitter [@alex_bol_](https://twitter.com/alex_bol_)
                                                      
 ## Dependencies
 
