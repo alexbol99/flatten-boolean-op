@@ -17,7 +17,7 @@ export default {
         {
             file: 'dist/main.umd.js',
             format: 'umd',
-            name: 'booean-op',
+            name: 'boolean-op',
             exports: 'named'
         },
     ],

@@ -1,6 +1,6 @@
 {
   "name": "@flatten-js/boolean-op",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Boolean operations on polygons",
   "main": "dist/main.cjs.js",
   "umd:main": "dist/main.umd.js",
