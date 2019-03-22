@@ -1,6 +1,6 @@
 {
   "name": "@flatten-js/boolean-op",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Boolean operations on polygons",
   "main": "dist/main.cjs.js",
   "umd:main": "dist/main.umd.js",
@@ -54,7 +54,8 @@
     "rollup-plugin-node-resolve": "^4.0.0"
   },
   "dependencies": {
-    "@flatten-js/core": "^1.0.9",
+    "@flatten-js/core": "^1.0.11",
     "@flatten-js/utils": "^1.0.0"
   }
 }
+

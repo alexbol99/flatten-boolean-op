@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="BooleanOp.html">BooleanOp</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="BooleanOp.html#.intersect">intersect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="BooleanOp.html#.subtract">subtract</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="BooleanOp.html#.unify">unify</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#intersect">intersect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#subtract">subtract</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#unify">unify</a></span></li>
 </nav>
 
 <div id="main">
@@ -48,107 +48,40 @@
 
 
     <section class="readme">
-        <article><h1>Boolean operations on polygons</h1><p>Flatten-boolean-op is a javascript library performing fast and reliable boolean operations on polygons.
-It supports following boolean operations on polygons:</p>
+        <article><p><a href="https://badge.fury.io/js/flatten-boolean-op"><img alt="npm version" src="https://badge.fury.io/js/flatten-boolean-op.svg"></a>
+<a href="https://travis-ci.org/alexbol99/flatten-boolean-op"><img alt="Build Status" src="https://travis-ci.org/alexbol99/flatten-boolean-op.svg?branch=master"></a>
+<a href="https://coveralls.io/github/alexbol99/flatten-boolean-op?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/github/alexbol99/flatten-boolean-op/badge.svg?branch=master"></a></p>
+<h1>Boolean operations on polygons</h1><p><strong>@flatten-js/boolean-op</strong> is a javascript library performing fast and reliable boolean operations on polygons.
+It provides binary boolean operations:</p>
 <ul>
-<li>unify</li>
-<li>intersect</li>
-<li>subtract</li>
+<li><a href="https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.unify">unify</a> </li>
+<li><a href="https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.intersect">intersect</a></li>
+<li><a href="https://alexbol99.github.io/flatten-boolean-op/BooleanOp.html#.subtract">subtract</a></li>
 </ul>
-<p>Polygon is actually a multi-polygon which is comprised from a number of faces. The orientation of faces (clockwise or counterclockwise) is matter,
+<p>Polygon is actually a multi-polygon which may be comprised from a number of faces. The orientation of faces (clockwise or counterclockwise) is matter,
 because algorithm implemented in the way that it never changes an original direction of the edge. For the boolean operation to be performed correctly,
 faces have to fit the following rules:
-1) Each face is a non-degenerated simple closed polygon. In another words, face should not have self-intersections and its orientation may be strictly defined.
+1) Each face is a non-degenerated simple closed polygon.
+In another words, face should not have self-intersections and its orientation should be definable.
 2) If one face is totally inside another face, its orientation should be opposite to the orientation of external face.
-Then we will call external faces <strong>islands</strong> and internal faces <strong>holes</strong>.
+Then we call external faces as  <strong>&quot;islands&quot;</strong> and internal faces as <strong>&quot;holes&quot;</strong>.
 So the rule is &quot;no island inside island and no hole inside hole&quot;.
 3) Faces of the polygon should not overlap each other</p>
-<p>Bollean operation algorithm does not check that polygon fits these rules, this is on the responsibility of the caller.</p>
+<p>Boolean operation algorithm does not check that polygon fits these rules, this is on the responsibility of the caller.</p>
 <p>The result of boolean operation is also a polygon.
-Note, that the resulted polygon may be empty, for example as the result of the intersection between two disjoint polygons.</p>
-<h2>Dependencies</h2><p>Flatten-boolean-op depends on the <strong>flatten-js 2d geometry library</strong>.
-This library provides <strong>Polygon</strong> class definition together with the methods to treat faces and edges.<br/>
-Explore this library at <a href="https://github.com/alexbol99/flatten-js">https://github.com/alexbol99/flatten-js</a> and see more useful classes and methods.</p>
-<h2>Usage</h2><p>Your can choose either to install package in your project or to consume algorithm as a serice.</p>
-<h3>Install in your project</h3><p>Install package in your project using npm:</p>
-<pre class="prettyprint source"><code>npm install flatten-boolean-op --save</code></pre><p>Then require package in your module, define polygons using flatten-js library and call one of the methods:</p>
-<pre class="prettyprint source lang-javascript"><code>    // require flatten-boolean-op package
-    let BooleanOp = require('flatten-boolean-op');
-    let {union, intersect, subtract} = BooleanOp;
+Note, that the resulted polygon may be empty, for example as the result of the intersection between two disjoint polygons.                                                     </p>
+<h2>Usage</h2><p>Install this package together with @flatten-js/core package which provide class Polygon:</p>
+<pre class="prettyprint source lang-bash"><code>    npm install @flatten-js/boolean-op @flatten-js/core --save</code></pre><h2>Example</h2><p>Then require package in your module, create two polygons using flatten-js library and call one of the methods:</p>
+<pre class="prettyprint source lang-javascript"><code>    import {intersect} from &quot;@flatten-js/boolean-op&quot;
+    import {Polygon, point} from &quot;@flatten-js/core&quot;
 
-    // require flatten-js library that provides polygon model and other geometrical primitives
-    let Flatten = require('flatten-js');
-    let {Polygon, Point, Segment, Arc} = Flatten;
+    let polygon1 = new Polygon();
+    polygon1.addFace([point(200,10), point(100, 300), point(400, 150), point(250, 10)]);
 
-    // define first polygon
-    let poly1 = new Polygon();
-    poly1.addFace([point(0,0), point(150, 0), point(150,30), point(0, 30)]);
+    let polygon2 = new Polygon();
+    polygon2.addFace([point(450, 10), point(0, 150), point(300,300), point(600, 300)]);
 
-    // define second polygon
-    let poly2 = new Polygon();
-    poly2.addFace([point(100, 20), point(200, 20), point(200, 40), point(100, 40)]);
-
-    // apply boolean operation &quot;unify&quot;
-    let poly = unify(poly1, poly2);   
-
-    console.log(poly.faces.size);           // expected 1
-    console.log(poly.edges.size);           // expected 8</code></pre><h2>Consume as a service</h2><p>Instead of intalling package in your project you may choose to consume it as a service from <a href="https://algorithmia.com">https://algorithmia.com</a> <br/></p>
-<ul>
-<li><p>First, define your account in Algorithmia platform and get your API key.</p>
-</li>
-<li><p>Then, install Algorithmia client</p>
-</li>
-</ul>
-<pre class="prettyprint source"><code>npm install --save algorithmia</code></pre><ul>
-<li>Instantiate an Algorithmia client using your API key:</li>
-</ul>
-<pre class="prettyprint source lang-javascript"><code>     var algorithmia = require(&quot;algorithmia&quot;);
-     var client = algorithmia(process.env.ALGORITHMIA_API_KEY);     </code></pre><ul>
-<li>Define input, call <code>.algo</code> method to define query and use <code>.pipe</code> to attach input to the query</li>
-</ul>
-<p>Algorithm accepts input as an array to 3 elements: two polygon operands and boolean operation code. 
-Polygon operand is JSON object, which is array of arrays of edges, representing each face.
-Polygon JSON object may be obtained using build-in <code>polygon.toJSON()</code> method.<br/>
-Algorithmia client calls JSON.serialize(), submits query to the algorithmia server and returns promise.
-Boolean operation code is one of <code>Flatten.BOOLEAN_UNION, Flatten.BOOLEAN_SUBTRACT, Flatten.BOOLEAN_INTERSECT</code> constants.<br>The result is also polygon JSON object. Polygon may be easily reconstructed from this object, see example below.</p>
-<pre class="prettyprint source lang-javascript"><code>    //
-     var algorithmia = require(&quot;algorithmia&quot;);
-
-     var client = algorithmia(process.env.ALGORITHMIA_API_KEY);
-    // require flatten-boolean-op package
-    let BooleanOp = require('flatten-boolean-op');
-    let {union, intersect, subtract} = BooleanOp;
-
-    // require flatten-js library that provides polygon model and other geometrical primitives
-    let Flatten = require('flatten-js');
-    let {Polygon, Point, Segment, Arc} = Flatten;
-
-    // define first polygon
-    let poly1 = new Polygon();
-    poly1.addFace([point(0,0), point(150, 0), point(150,30), point(0, 30)]);
-
-    // define second polygon
-    let poly2 = new Polygon();
-    poly2.addFace([point(100, 20), point(200, 20), point(200, 40), point(100, 40)]);
-
-    // prepare input array for calling algorithm on cloud
-    let input = [poly1.toJSON(), poly2.toJSON(), Flatten.BOOLEAN_UNION];
-
-    // request boolean operation
-    client(&quot;ALGORITHMIA_API_KEY&quot;)
-        .algo(&quot;alexbol99/PolygonBooleanOp/0.1.2&quot;)
-        .pipe(input)
-        .then(function(output) {
-            // Parse response from algorithmia and create new polygon
-            let poly = new Polygon();   
-            for (let jsonFace of output) {
-                poly.addFace(jsonFace);
-            }
-            console.log(poly.faces.size);           // expected 1
-            console.log(poly.edges.size);           // expected 8            
-        });
-</code></pre><p>See <a href="https://algorithmia.com/algorithms/alexbol99/PolygonBooleanOp">https://algorithmia.com/algorithms/alexbol99/PolygonBooleanOp</a> algorithm page for more details</p>
-<h2>Algorithm description</h2><p>Algorithm implements the version of Kevin Weiler and Peter Atherton clipping algorithm,
+    let polygon_res = intersect(polygon1, polygon2);</code></pre><h2>Algorithm description</h2><p>Algorithm implements the version of Kevin Weiler and Peter Atherton clipping algorithm,
 described in the article <strong>Hidden Surface Removal Using Polygon Area Sorting</strong> see <a href="https://www.cs.drexel.edu/~david/Classes/CS430/HWs/p214-weiler.pdf">https://www.cs.drexel.edu/~david/Classes/CS430/HWs/p214-weiler.pdf</a></p>
 <p>In pseudocode, it may be described as below:</p>
 <ol>
@@ -164,16 +97,17 @@ It may be INSIDE, OUTSIDE or BOUNDARY. For BOUNDARY chains we will defined addit
 which will tell us how to treat boundary chains.</li>
 <li>Depending on performing boolean operation, not relevant chains are removing from both polygons<ul>
 <li>UNION: remove inner chains</li>
-<li>SUBSTRACT: remove inner chains from the first polygon and outers chains from the second polygon</li>
-<li>INTERSECT: remove outer chains from the second polygon
-Boundary chains with flag OVERLAPPING_OPPOSITE are always removed</li>
+<li>SUBTRACT: remove inner chains from the first polygon and outers chains from the second polygon</li>
+<li>INTERSECT: remove outer chains from the second polygon</li>
+<li>Boundary chains with flag OVERLAPPING_OPPOSITE are always removed</li>
 </ul>
 </li>
 <li>Restore faces connecting interrupted chains from the first polygon to the correspondent chains from the second polygon</li>
 </ol>
 <p>Remember that algorithm relies on the direction of the edges. It can find continuation of the interrupted chain only if edge from the second polygon
 is an precise continuation of the edge from the first one. That is why faces that have same meaning (island or hole) should have same orientation
-is both polygons.</p></article>
+is both polygons.</p>
+<h2>Documentation</h2><p>Documentation may be found here <a href="https://alexbol99.github.io/flatten-boolean-op/index.html">https://alexbol99.github.io/flatten-boolean-op/index.html</a></p></article>
     </section>
 
 
@@ -186,7 +120,7 @@ is both polygons.</p></article>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Mar 05 2018 16:05:39 GMT+0200 (Jerusalem Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Mar 22 2019 14:31:45 GMT+0200 (Israel Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
