@@ -4,16 +4,12 @@
 
 'use strict';
 
-let expect = require('chai').expect;
-let Flatten = require('flatten-js');
-// let Flatten = require("flatten-js/dist/flatten.min");
-let BooleanOp = require('../index');
-// let BooleanOp = require('../dist/flatten-boolean-op.min');
-// let now = require("performance-now");
+import {expect} from 'chai';
+import Flatten from '@flatten-js/core/dist/main.umd.js';
+import {Polygon} from '@flatten-js/core/dist/main.umd.js';
+import {point, segment, arc, circle} from '@flatten-js/core/dist/main.umd.js';
 
-let {Polygon} = Flatten;
-let {point, segment, arc, circle} = Flatten;
-let {unify, subtract, intersect, boolean_op, arrange} = BooleanOp;
+import {unify, subtract, intersect} from '../index.js';
 
 describe('#Algorithms.Boolean Operations', function () {
     describe('#Algorithms.Boolean Union', function () {
@@ -21,26 +17,26 @@ describe('#Algorithms.Boolean Operations', function () {
             expect(unify).to.exist;
             expect(unify).to.be.a('function');
         });
-        it('Function arrange defined', function () {
-            expect(arrange).to.exist;
-            expect(arrange).to.be.a('function');
-        });
-        it('Can arrange two polygons and add vertices', function () {
-            "use strict";
-            let poly1 = new Polygon();
-            poly1.addFace([point(0, 0), point(150, 0), point(150, 30), point(0, 30)]);
-            let poly2 = new Polygon();
-            poly2.addFace([point(100, 20), point(200, 20), point(200, 40), point(100, 40)]);
-            arrange(poly1, poly2);
-            expect(poly1.edges.size).to.equal(6);
-            expect(poly2.edges.size).to.equal(6);
-            for (let face of poly1.faces) {
-                expect(face.size).to.equal(6);
-            }
-            for (let face of poly2.faces) {
-                expect(face.size).to.equal(6);
-            }
-        });
+        // it('Function arrange defined', function () {
+        //     expect(arrange).to.exist;
+        //     expect(arrange).to.be.a('function');
+        // });
+        // it('Can arrange two polygons and add vertices', function () {
+        //     "use strict";
+        //     let poly1 = new Polygon();
+        //     poly1.addFace([point(0, 0), point(150, 0), point(150, 30), point(0, 30)]);
+        //     let poly2 = new Polygon();
+        //     poly2.addFace([point(100, 20), point(200, 20), point(200, 40), point(100, 40)]);
+        //     arrange(poly1, poly2);
+        //     expect(poly1.edges.size).to.equal(6);
+        //     expect(poly2.edges.size).to.equal(6);
+        //     for (let face of poly1.faces) {
+        //         expect(face.size).to.equal(6);
+        //     }
+        //     for (let face of poly2.faces) {
+        //         expect(face.size).to.equal(6);
+        //     }
+        // });
         it('Can perform unify. 2 polygons, intersect', function () {
             "use strict";
             let poly1 = new Polygon();
@@ -307,8 +303,6 @@ describe('#Algorithms.Boolean Operations', function () {
         it('Can perform subtract. 2 intersecting polygons produce 2-island result', function () {
             "use strict";
 
-            let {Polygon, point} = Flatten;
-
             let polygon1 = new Polygon();
             polygon1.addFace([point(100, 10), point(100, 300), point(400, 150), point(250, 10)]);
 
@@ -384,8 +378,6 @@ describe('#Algorithms.Boolean Operations', function () {
         it('Can perform (boolean) intersection. Other 2 intersecting polygons', function () {
             "use strict";
 
-            let {Polygon, point} = Flatten;
-
             let polygon1 = new Polygon();
             polygon1.addFace([point(100, 10), point(100, 300), point(400, 150), point(250, 10)]);
 
@@ -400,8 +392,6 @@ describe('#Algorithms.Boolean Operations', function () {
         it('Can perform (boolean) intersection. First polygon inside the second', function () {
             "use strict";
 
-            let {Polygon, point} = Flatten;
-
             let polygon1 = new Polygon();
             polygon1.addFace([point(100, 10), point(100, 300), point(400, 150), point(250, 10)]);
 
@@ -415,9 +405,6 @@ describe('#Algorithms.Boolean Operations', function () {
         });
         it("Issue #2 with intersection of circle and box", function() {
             "use strict"
-
-            let {Polygon, segment, arc, point} = Flatten;
-            let {unify, intersect, subtract} = BooleanOp;
 
             let myPoly = new Polygon();
             myPoly.addFace([point(50, 50), point(50,950), point(950, 950), point(950, 50)]);
@@ -452,9 +439,6 @@ describe('#Algorithms.Boolean Operations', function () {
         });
         it("Issue #3", function() {
             "use strict";
-
-            let {Polygon, segment, arc, point} = Flatten;
-            let {unify, intersect, subtract} = BooleanOp;
 
             let myPoly = new Polygon();
             myPoly.addFace([point(6, 6), point(6,114), point(114, 114), point(114, 6)]);

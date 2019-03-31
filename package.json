@@ -1,30 +1,39 @@
 {
-  "name": "flatten-boolean-op",
-  "version": "1.0.14",
+  "name": "@flatten-js/boolean-op",
+  "version": "1.1.0",
   "description": "Boolean operations on polygons",
-  "main": "index.js",
+  "main": "dist/main.cjs.js",
+  "umd:main": "dist/main.umd.js",
+  "unpkg": "dist/main.umd.js",
+  "module": "dist/main.esm.js",
+  "nyc": {
+    "require": [
+      "@babel/register"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
   "scripts": {
-    "test": "mocha --reporter spec",
+    "test": "cross-env NODE_ENV=test nyc --reporter=text --reporter=html mocha",
     "generate-docs": "jsdoc -c ./.jsdoc.json --verbose",
-    "npm-publish": "npm version patch; git push && git push --tags; npm publish",
-    "cover": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec test/*",
-    "build": "webpack --progress --mode=production"
+    "npm-publish-norun": "npm version patch; git push && git push --tags; npm publish",
+    "publish-npm": "npm publish --access public",
+    "cover": "nyc report --reporter=text-lcov | coveralls",
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alexbol99/flatten-boolean-op.git"
   },
   "keywords": [
+    "flatten-js",
     "geometry",
     "polygon",
-    "contour",
     "boolean operations",
     "union",
-    "intersection",
+    "intersect",
     "clipping",
-    "subtraction",
-    "self-intersection",
-    "arrangement"
+    "subtract"
   ],
   "author": "Alex Bol <alexbol99@gmail.com> (https://github.com/alexbol99)",
   "license": "MIT",
@@ -36,18 +45,26 @@
     "node": ">=4.2.4"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "coveralls": "^3.0.2",
-    "istanbul": "^0.4.5",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/register": "^7.0.0",
+    "babel-plugin-istanbul": "^5.1.1",
+    "chai": "^4.2.0",
+    "coveralls": "^3.0.3",
+    "cross-env": "^5.2.0",
     "jsdoc": "^3.5.5",
     "jsdom": "9.12.0",
     "jsdom-global": "2.1.1",
     "minami": "^1.2.3",
-    "mocha": "^5.2.0",
-    "webpack": "^4.29.4",
-    "webpack-cli": "^3.2.3"
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
+    "rollup": "^1.7.3",
+    "rollup-plugin-node-resolve": "^4.0.0"
   },
   "dependencies": {
-    "flatten-js": "^0.6.8"
+    "@flatten-js/core": "^1.0.14",
+    "@flatten-js/utils": "^1.0.0"
   }
 }
