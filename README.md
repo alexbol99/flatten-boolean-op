@@ -26,6 +26,10 @@ Boolean operation algorithm does not check that polygon fits these rules, this i
 The result of boolean operation is also a polygon.
 Note, that the resulted polygon may be empty, for example as the result of the intersection between two disjoint polygons.                                                     
 
+## Contacts
+
+Follow me on Twitter [@alex_bol_](https://twitter.com/alex_bol_)
+
 ## Usage
 
 Install this package together with @flatten-js/core package which provide class Polygon:

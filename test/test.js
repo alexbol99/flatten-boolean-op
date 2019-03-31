@@ -9,8 +9,7 @@ import Flatten from '@flatten-js/core/dist/main.umd.js';
 import {Polygon} from '@flatten-js/core/dist/main.umd.js';
 import {point, segment, arc, circle} from '@flatten-js/core/dist/main.umd.js';
 
-// import {unify, subtract, intersect} from '../index.js';
-import {unify, subtract, intersect} from '../dist/main.umd.js';
+import {unify, subtract, intersect} from '../index.js';
 
 describe('#Algorithms.Boolean Operations', function () {
     describe('#Algorithms.Boolean Union', function () {

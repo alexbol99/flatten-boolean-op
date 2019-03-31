@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>booleanOp.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
@@ -10,18 +10,18 @@
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
-    <link href="styles/prettify-tomorrow.css" rel="stylesheet" type="text/css">
-    <link href="styles/jsdoc-default.css" rel="stylesheet" type="text/css">
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 <body>
 
-<input class="nav-trigger" id="nav-trigger" type="checkbox" />
-<label class="navicon-button x" for="nav-trigger">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
   <div class="navicon"></div>
 </label>
 
-<label class="overlay" for="nav-trigger"></label>
+<label for="nav-trigger" class="overlay"></label>
 
 <nav>
     <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#intersect">intersect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#subtract">subtract</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#unify">unify</a></span></li>
@@ -43,18 +43,19 @@
  * Created by Alex Bol on 12/02/2018.
  */
 "use strict";
-import Utils from '@flatten-js/utils/dist/main.esm';
-// import Flatten from '@flatten-js/core';
+// import Utils from '@flatten-js/utils/dist/main.esm';
+import {Utils} from '@flatten-js/core';
+import {INSIDE, OUTSIDE, BOUNDARY, OVERLAP_SAME, OVERLAP_OPPOSITE} from '@flatten-js/core';
 
 const NOT_VERTEX = 0;
 const START_VERTEX = 1;
 const END_VERTEX = 2;
 
-const INSIDE = 1;
-const OUTSIDE = 0;
-const BOUNDARY = 2;
-const OVERLAP_SAME = 1;
-const OVERLAP_OPPOSITE = 2;
+// const INSIDE = Flatten.INSIDE;
+// const OUTSIDE = Flatten.OUTSIDE;
+// const BOUNDARY = Flatten.BOUNDARY;
+// const OVERLAP_SAME = Flatten.OVERLAP_SAME;
+// const OVERLAP_OPPOSITE = Flatten.OVERLAP_OPPOSITE;
 
 export const BOOLEAN_UNION = 1;
 export const BOOLEAN_INTERSECT = 2;
@@ -166,9 +167,9 @@ function clip(polygon1, polygon2, op)
     // Set overlapping flags for boundary chains: SAME or OPPOSITE
     setOverlappingFlags(intersections);
 
-    // remove not relevant faces between intersection points
-    removeNotRelevantFaces(res_poly, op, intersections.int_points1_sorted, true);
-    removeNotRelevantFaces(wrk_poly, op, intersections.int_points2_sorted, false);
+    // remove not relevant chains between intersection points
+    removeNotRelevantChains(res_poly, op, intersections.int_points1_sorted, true);
+    removeNotRelevantChains(wrk_poly, op, intersections.int_points2_sorted, false);
 
     // remove not relevant not intersected faces from res_polygon and wrk_polygon
     // if op == UNION, remove faces that are included in wrk_polygon without intersection
@@ -225,7 +226,7 @@ function getIntersections(polygon1, polygon2)
     return intersections;
 }
 
-function addToIntPoints(edge, pt, int_points)
+export function addToIntPoints(edge, pt, int_points)
 {
     let id = int_points.length;
     let split = edge.shape.split(pt);
@@ -272,7 +273,7 @@ function sortIntersections(intersections)
     intersections.int_points2_sorted = getSortedArray(intersections.int_points2);
 }
 
-function getSortedArray(int_points)
+export function getSortedArray(int_points)
 {
     let faceMap = new Map;
     let id = 0;
@@ -311,7 +312,7 @@ function compareFn(ip1, ip2)
     return 0;
 }
 
-function splitByIntersections(polygon, int_points)
+export function splitByIntersections(polygon, int_points)
 {
     if (!int_points) return;
     for (let int_point of int_points) {
@@ -524,7 +525,7 @@ function setOverlappingFlags(intersections)
     }
 }
 
-function removeNotRelevantFaces(polygon, op, int_points, is_res_polygon)
+export function removeNotRelevantChains(polygon, op, int_points, is_res_polygon)
 {
     if (!int_points) return;
     let cur_face = undefined;
@@ -588,8 +589,7 @@ function removeNotRelevantFaces(polygon, op, int_points, is_res_polygon)
         /* skip to the last point in "points from" group */
         i += int_points_from_pull_num - 1;
     }
-}
-;
+};
 
 function intPointsPullCount(int_points, cur_int_point_num, cur_face)
 {
@@ -710,7 +710,7 @@ function swapLinks(res_polygon, wrk_polygon, intersections)
     // Sanity check that no dead ends left
 }
 
-function removeOldFaces(polygon, int_points)
+export function removeOldFaces(polygon, int_points)
 {
     for (let int_point of int_points) {
         polygon.faces.delete(int_point.face);
@@ -722,7 +722,7 @@ function removeOldFaces(polygon, int_points)
     }
 }
 
-function restoreFaces(polygon, int_points, other_int_points)
+export function restoreFaces(polygon, int_points, other_int_points)
 {
     // For each intersection point - create new face
     for (let int_point of int_points) {
@@ -778,7 +778,8 @@ function mergeRelevantNotIntersectedFaces(res_polygon, wrk_polygon)
     for (let face of wrk_polygon.faces) {
         res_polygon.addFace(face);
     }
-}</code></pre>
+}
+</code></pre>
         </article>
     </section>
 
@@ -790,7 +791,7 @@ function mergeRelevantNotIntersectedFaces(res_polygon, wrk_polygon)
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Mar 22 2019 14:31:45 GMT+0200 (Israel Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Mar 31 2019 23:36:02 GMT+0300 (Israel Daylight Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

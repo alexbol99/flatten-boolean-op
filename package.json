@@ -1,17 +1,24 @@
 {
   "name": "@flatten-js/boolean-op",
-  "version": "1.0.16",
+  "version": "1.1.0",
   "description": "Boolean operations on polygons",
   "main": "dist/main.cjs.js",
   "umd:main": "dist/main.umd.js",
   "unpkg": "dist/main.umd.js",
   "module": "dist/main.esm.js",
+  "nyc": {
+    "require": [
+      "@babel/register"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
   "scripts": {
-    "test": "mocha --require @babel/register --reporter spec",
+    "test": "cross-env NODE_ENV=test nyc --reporter=text --reporter=html mocha",
     "generate-docs": "jsdoc -c ./.jsdoc.json --verbose",
     "npm-publish-norun": "npm version patch; git push && git push --tags; npm publish",
-    "npm-publish": "npm publish --access public",
-    "cover": "istanbul cover ./node_modules/mocha/bin/_mocha -- --require @babel/register -R spec test/*",
+    "publish-npm": "npm publish --access public",
+    "cover": "nyc report --reporter=text-lcov | coveralls",
     "build": "rollup -c"
   },
   "repository": {
@@ -43,19 +50,21 @@
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.3.1",
     "@babel/register": "^7.0.0",
+    "babel-plugin-istanbul": "^5.1.1",
     "chai": "^4.2.0",
-    "coveralls": "^3.0.2",
-    "istanbul": "^0.4.5",
+    "coveralls": "^3.0.3",
+    "cross-env": "^5.2.0",
     "jsdoc": "^3.5.5",
     "jsdom": "9.12.0",
     "jsdom-global": "2.1.1",
     "minami": "^1.2.3",
-    "mocha": "^5.2.0",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
+    "rollup": "^1.7.3",
     "rollup-plugin-node-resolve": "^4.0.0"
   },
   "dependencies": {
-    "@flatten-js/core": "^1.0.11",
+    "@flatten-js/core": "^1.0.14",
     "@flatten-js/utils": "^1.0.0"
   }
 }
-

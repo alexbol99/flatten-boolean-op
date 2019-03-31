@@ -1,7 +1,7 @@
 {
   "source": {
     "include": ["./src", "README.md"],
-    "exclude": ["./docs", "./node_modules", "./coverage", "./test", "./test.js"],
+    "exclude": ["./docs", "./dist", "./node_modules", "./coverage", "./test", "./index.js"],
     "includePattern": ".js$"
   },
   "opts": {

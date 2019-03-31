@@ -2,18 +2,19 @@
  * Created by Alex Bol on 12/02/2018.
  */
 "use strict";
-import Utils from '@flatten-js/utils/dist/main.esm';
-// import Flatten from '@flatten-js/core';
+// import Utils from '@flatten-js/utils/dist/main.esm';
+import {Utils} from '@flatten-js/core';
+import {INSIDE, OUTSIDE, BOUNDARY, OVERLAP_SAME, OVERLAP_OPPOSITE} from '@flatten-js/core';
 
 const NOT_VERTEX = 0;
 const START_VERTEX = 1;
 const END_VERTEX = 2;
 
-const INSIDE = 1;
-const OUTSIDE = 0;
-const BOUNDARY = 2;
-const OVERLAP_SAME = 1;
-const OVERLAP_OPPOSITE = 2;
+// const INSIDE = Flatten.INSIDE;
+// const OUTSIDE = Flatten.OUTSIDE;
+// const BOUNDARY = Flatten.BOUNDARY;
+// const OVERLAP_SAME = Flatten.OVERLAP_SAME;
+// const OVERLAP_OPPOSITE = Flatten.OVERLAP_OPPOSITE;
 
 export const BOOLEAN_UNION = 1;
 export const BOOLEAN_INTERSECT = 2;
@@ -125,9 +126,9 @@ function clip(polygon1, polygon2, op)
     // Set overlapping flags for boundary chains: SAME or OPPOSITE
     setOverlappingFlags(intersections);
 
-    // remove not relevant faces between intersection points
-    removeNotRelevantFaces(res_poly, op, intersections.int_points1_sorted, true);
-    removeNotRelevantFaces(wrk_poly, op, intersections.int_points2_sorted, false);
+    // remove not relevant chains between intersection points
+    removeNotRelevantChains(res_poly, op, intersections.int_points1_sorted, true);
+    removeNotRelevantChains(wrk_poly, op, intersections.int_points2_sorted, false);
 
     // remove not relevant not intersected faces from res_polygon and wrk_polygon
     // if op == UNION, remove faces that are included in wrk_polygon without intersection
@@ -184,7 +185,7 @@ function getIntersections(polygon1, polygon2)
     return intersections;
 }
 
-function addToIntPoints(edge, pt, int_points)
+export function addToIntPoints(edge, pt, int_points)
 {
     let id = int_points.length;
     let split = edge.shape.split(pt);
@@ -231,7 +232,7 @@ function sortIntersections(intersections)
     intersections.int_points2_sorted = getSortedArray(intersections.int_points2);
 }
 
-function getSortedArray(int_points)
+export function getSortedArray(int_points)
 {
     let faceMap = new Map;
     let id = 0;
@@ -270,7 +271,7 @@ function compareFn(ip1, ip2)
     return 0;
 }
 
-function splitByIntersections(polygon, int_points)
+export function splitByIntersections(polygon, int_points)
 {
     if (!int_points) return;
     for (let int_point of int_points) {
@@ -483,7 +484,7 @@ function setOverlappingFlags(intersections)
     }
 }
 
-function removeNotRelevantFaces(polygon, op, int_points, is_res_polygon)
+export function removeNotRelevantChains(polygon, op, int_points, is_res_polygon)
 {
     if (!int_points) return;
     let cur_face = undefined;
@@ -547,8 +548,7 @@ function removeNotRelevantFaces(polygon, op, int_points, is_res_polygon)
         /* skip to the last point in "points from" group */
         i += int_points_from_pull_num - 1;
     }
-}
-;
+};
 
 function intPointsPullCount(int_points, cur_int_point_num, cur_face)
 {
@@ -669,7 +669,7 @@ function swapLinks(res_polygon, wrk_polygon, intersections)
     // Sanity check that no dead ends left
 }
 
-function removeOldFaces(polygon, int_points)
+export function removeOldFaces(polygon, int_points)
 {
     for (let int_point of int_points) {
         polygon.faces.delete(int_point.face);
@@ -681,7 +681,7 @@ function removeOldFaces(polygon, int_points)
     }
 }
 
-function restoreFaces(polygon, int_points, other_int_points)
+export function restoreFaces(polygon, int_points, other_int_points)
 {
     // For each intersection point - create new face
     for (let int_point of int_points) {
