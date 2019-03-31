@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/flatten-boolean-op.svg)](https://badge.fury.io/js/flatten-boolean-op)
+[![npm version](https://badge.fury.io/js/%40flatten-js%2Fboolean-op.svg)](https://badge.fury.io/js/%40flatten-js%2Fboolean-op)
 [![Build Status](https://travis-ci.org/alexbol99/flatten-boolean-op.svg?branch=master)](https://travis-ci.org/alexbol99/flatten-boolean-op)
 [![Coverage Status](https://coveralls.io/repos/github/alexbol99/flatten-boolean-op/badge.svg?branch=master)](https://coveralls.io/github/alexbol99/flatten-boolean-op?branch=master)
 
@@ -15,7 +15,7 @@ Polygon is actually a multi-polygon which may be comprised from a number of face
 because algorithm implemented in the way that it never changes an original direction of the edge. For the boolean operation to be performed correctly,
 faces have to fit the following rules:
 1) Each face is a non-degenerated simple closed polygon.
-In another words, face should not have self-intersections and its orientation should be definable.
+In another words, face shouhttps://badge.fury.io/js/flatten-boolean-op.svgld not have self-intersections and its orientation should be definable.
 2) If one face is totally inside another face, its orientation should be opposite to the orientation of external face.
 Then we call external faces as  **"islands"** and internal faces as **"holes"**.
 So the rule is "no island inside island and no hole inside hole".
