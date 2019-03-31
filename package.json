@@ -18,7 +18,7 @@
     "generate-docs": "jsdoc -c ./.jsdoc.json --verbose",
     "npm-publish-norun": "npm version patch; git push && git push --tags; npm publish",
     "publish-npm": "npm publish --access public",
-    "cover": "nyc report --reporter=text-lcov | coveralls",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "build": "rollup -c"
   },
   "repository": {
