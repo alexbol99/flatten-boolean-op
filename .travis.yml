@@ -7,7 +7,7 @@ install:
   - npm install
 
 before_install:
-  - npm install peerDependency
+  - npm install @flatten-js/core
 
 script:
   - npm run test
