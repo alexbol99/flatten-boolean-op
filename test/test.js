@@ -349,6 +349,34 @@ describe('#Algorithms.Boolean Operations', function () {
             expect(polygon.faces.size).to.equal(0);
             expect(polygon.edges.size).to.equal(0);
         });
+        it("Can subtract one polygon from another and create a hole (Issue #7)", function() {
+            const baseZ0Surface = [[[0, 0, 0], [10, 0, 0], [10, 10, 0], [0, 10, 0]]];
+            const z0Surface = [[[1, 1, 0], [9, 1, 0], [9, 9, 0], [1, 9, 0]]]; // where is the hole?
+// const z0Surface = [[[1, 1, 0], [9, 1, 0], [9, 9, 0], [1, 11, 0]]]; // subtraction works when not producing holes
+
+            const a = new Polygon();
+            for (const polygon of baseZ0Surface) {
+                let face = a.addFace(polygon.map(([x, y]) => point(x, y)));
+                if (face.orientation() !== Flatten.ORIENTATION.CCW) {
+                    face.reverse();
+                }
+            }
+
+            const b = new Polygon();
+            for (const polygon of z0Surface) {
+                let face = b.addFace(polygon.map(([x, y]) => point(x, y)));
+                if (face.orientation() !== Flatten.ORIENTATION.CCW) {
+                    face.reverse();
+                }
+            }
+
+            const myPoly = subtract(a, b);
+
+            expect(myPoly.faces.size).to.equal(2);
+            expect(myPoly.edges.size).to.equal(8);
+            expect([...myPoly.faces][0].orientation()).to.equal(Flatten.ORIENTATION.CCW);
+            expect([...myPoly.faces][1].orientation()).to.equal(Flatten.ORIENTATION.CW);
+        });
     });
     describe('#Algorithms.Boolean Intersection', function () {
         it('Can perform (boolean) intersection. 2 intersecting polygons', function () {

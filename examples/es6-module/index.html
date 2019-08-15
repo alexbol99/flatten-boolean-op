@@ -6,23 +6,23 @@
     <title>ES Modules</title>
 </head>
 <body>
-    <svg id="stage" width="1000" height="600"></svg>
+<svg id="stage" width="1000" height="600"></svg>
 
-    <script type="module">
-        import {point, Polygon} from "https://unpkg.com/@flatten-js/core?module";
-        import {intersect} from "https://unpkg.com/@flatten-js/boolean-op?module";
+<script type="module">
+    import {point, Polygon} from "https://unpkg.com/@flatten-js/core?module";
+    import {intersect} from "https://unpkg.com/@flatten-js/boolean-op?module";
 
-        let polygon1 = new Polygon();
-        polygon1.addFace([point(200,10), point(100, 300), point(400, 150), point(250, 10)]);
+    let polygon1 = new Polygon();
+    polygon1.addFace([point(200,10), point(100, 300), point(400, 150), point(250, 10)]);
 
-        let polygon2 = new Polygon();
-        polygon2.addFace([point(450, 10), point(0, 150), point(300,300), point(600, 300)]);
+    let polygon2 = new Polygon();
+    polygon2.addFace([point(450, 10), point(0, 150), point(300,300), point(600, 300)]);
 
-        let polygon_res = intersect(polygon1, polygon2);
+    let polygon_res = intersect(polygon1, polygon2);
 
-        document.getElementById("stage").innerHTML = polygon1.svg() + polygon2.svg() +
-            polygon_res.svg({"fill":"lightgreen"});
+    document.getElementById("stage").innerHTML = polygon1.svg() + polygon2.svg() +
+        polygon_res.svg({"fill":"lightgreen"});
 
-    </script>
+</script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@flatten-js/core')) :
     typeof define === 'function' && define.amd ? define(['exports', '@flatten-js/core'], factory) :
-    (global = global || self, factory(global['boolean-op'] = {}, global.core));
+    (global = global || self, factory(global['boolean-op'] = {}, global.Flatten));
 }(this, function (exports, core) { 'use strict';
 
     /**
@@ -573,7 +573,7 @@
                 res_polygon.edges.add(edge);
             }
             // If union - add face from wrk_polygon that is not intersected with res_polygon
-            if (op === BOOLEAN_UNION &&
+            if ( (op === BOOLEAN_UNION || op == BOOLEAN_SUBTRACT) &&
                 int_points && int_points.find((ip) => (ip.face === face)) === undefined) {
                 res_polygon.addFace(face.first, face.last);
             }

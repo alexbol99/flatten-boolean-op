@@ -7,18 +7,21 @@ export default {
         {
             file: 'dist/main.cjs.js',
             format: 'cjs',
-            exports: 'named'
+            exports: 'named',
+            globals: {'@flatten-js/core': 'Flatten', 'core': 'Flatten'}
         },
         {
             file: 'dist/main.esm.js',
             format: 'esm',
-            exports: 'named'
+            exports: 'named',
+            globals: {'@flatten-js/core': 'Flatten', 'core': 'Flatten'}
         },
         {
             file: 'dist/main.umd.js',
             format: 'umd',
             name: 'boolean-op',
-            exports: 'named'
+            exports: 'named',
+            globals: {'@flatten-js/core': 'Flatten', 'core': 'Flatten'}
         },
     ],
     plugins: [
