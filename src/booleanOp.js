@@ -309,57 +309,36 @@ function filterDuplicatedIntersections(intersections)
 
     let do_squeeze = false;
 
-    let int_point_ref1 = intersections.int_points1_sorted[0];
-    let int_point_ref2 = intersections.int_points2[int_point_ref1.id];
-    for (let i = 1; i < intersections.int_points1_sorted.length; i++) {
-        let int_point_cur1 = intersections.int_points1_sorted[i];
-
-        if (!Utils.EQ(int_point_cur1.arc_length, int_point_ref1.arc_length)) {
-            int_point_ref1 = int_point_cur1;
-            int_point_ref2 = intersections.int_points2[int_point_ref1.id];
+    let int_point_ref1, int_point_ref2;
+    let int_point_cur1, int_point_cur2;
+    for (let i = 0; i < intersections.int_points1.length; i++) {
+        int_point_ref1 = intersections.int_points1[i];
+        int_point_ref2 = intersections.int_points2[i];
+        if (int_point_ref1.id === -1 && int_point_ref2.id === -1)
             continue;
-        }
 
-        /* Same length: int_point_cur1->arc_len == int_point_ref1->arc_len */
-        /* Ensure this is intersection between same edges from the same face */
-        let int_point_cur2 = intersections.int_points2[int_point_cur1.id];
-        if (int_point_cur1.edge_before === int_point_ref1.edge_before &&
-            int_point_cur1.edge_after === int_point_ref1.edge_after &&
-            int_point_cur2.edge_before === int_point_ref2.edge_before &&
-            int_point_cur2.edge_after === int_point_ref2.edge_after) {
-            int_point_cur1.id = -1;
-            /* to be deleted */
-            int_point_cur2.id = -1;
-            /* to be deleted */
-            do_squeeze = true;
-        }
-    }
+        for (let j=0; j < intersections.int_points1.length; j++) {
+            if (j === i)
+                continue;
 
-    int_point_ref2 = intersections.int_points2_sorted[0];
-    int_point_ref1 = intersections.int_points1[int_point_ref2.id];
-    for (let i = 1; i < intersections.int_points2_sorted.length; i++) {
-        let int_point_cur2 = intersections.int_points2_sorted[i];
+            int_point_cur1 = intersections.int_points1[j];
+            int_point_cur2 = intersections.int_points2[j];
 
-        if (int_point_cur2.id == -1) continue;
-        /* already deleted */
+            if (int_point_cur1.id === -1 && int_point_cur2.id === -1)
+                continue;
 
-        if (int_point_ref2.id == -1 || /* can't be reference if already deleted */
-            !(Utils.EQ(int_point_cur2.arc_length, int_point_ref2.arc_length))) {
-            int_point_ref2 = int_point_cur2;
-            int_point_ref1 = intersections.int_points1[int_point_ref2.id];
-            continue;
-        }
-
-        let int_point_cur1 = intersections.int_points1[int_point_cur2.id];
-        if (int_point_cur1.edge_before === int_point_ref1.edge_before &&
-            int_point_cur1.edge_after === int_point_ref1.edge_after &&
-            int_point_cur2.edge_before === int_point_ref2.edge_before &&
-            int_point_cur2.edge_after === int_point_ref2.edge_after) {
-            int_point_cur1.id = -1;
-            /* to be deleted */
-            int_point_cur2.id = -1;
-            /* to be deleted */
-            do_squeeze = true;
+            if (Utils.EQ(int_point_cur1.arc_length, int_point_ref1.arc_length) &&
+                Utils.EQ(int_point_cur2.arc_length, int_point_ref2.arc_length) &&
+                int_point_cur1.faceId === int_point_ref1.faceId &&
+                int_point_cur2.faceId === int_point_ref2.faceId &&
+                int_point_cur1.edge_before === int_point_ref1.edge_before &&
+                int_point_cur1.edge_after === int_point_ref1.edge_after &&
+                int_point_cur2.edge_before === int_point_ref2.edge_before &&
+                int_point_cur2.edge_after === int_point_ref2.edge_after) {
+                int_point_cur1.id = -1;      /* to be deleted */
+                int_point_cur2.id = -1;      /* to be deleted */
+                do_squeeze = true;
+            }
         }
     }
 

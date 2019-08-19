@@ -10,7 +10,7 @@ before_install:
   - npm install @flatten-js/core
 
 script:
-  - npm run test
+                                 - npm run test
 
-# Send coverage data to Coveralls
-after_success: npm run coverage
+                               # Send coverage data to Coveralls
+                               after_success: npm run coverage
