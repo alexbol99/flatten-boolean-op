@@ -6,7 +6,7 @@
 
 import {expect} from 'chai';
 import Flatten from '@flatten-js/core';
-import {Polygon} from '@flatten-js/core';
+import {Polygon, Point} from '@flatten-js/core';
 import {point, segment, arc, circle} from '@flatten-js/core';
 
 import {unify, subtract, intersect} from '../index.js';
@@ -376,6 +376,28 @@ describe('#Algorithms.Boolean Operations', function () {
             expect(myPoly.edges.size).to.equal(8);
             expect([...myPoly.faces][0].orientation()).to.equal(Flatten.ORIENTATION.CCW);
             expect([...myPoly.faces][1].orientation()).to.equal(Flatten.ORIENTATION.CW);
+        });
+        it("Issue #11", function() {
+            const area = new Polygon();
+            area.addFace([new Point(612.31281198, 49.2512479201),
+                new Point(490.31281198, 207.25124792),
+                new Point(257.31281198, 207.25124792),
+                new Point(161.31281198, 98.2512479201),
+                new Point(49.31281198, 207.25124792),
+                new Point(49.31281198, 629.25124792),
+                new Point(237.31281198, 536.25124792),
+                new Point(490.31281198, 536.25124792),
+                new Point(817.31281198, 629.25124792)]);
+
+            const borderWide = new Polygon();
+            borderWide.addFace([new Point(49.31281198, 629.25124792),
+                new Point(237.31281197999985, 536.25124792),
+                new Point(172.8105605334842, 536.25124792),
+                new Point(49.31281198, 597.3432192789045)]);
+
+            const res = subtract(area, borderWide);
+            expect(res.faces.size).to.equal(1);
+            // expect(poly.edges.size).to.equal(4);
         });
     });
     describe('#Algorithms.Boolean Intersection', function () {
