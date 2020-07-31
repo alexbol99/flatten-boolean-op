@@ -197,6 +197,12 @@ export function addToIntPoints(edge, pt, int_points)
         } else if (edge.shape.end.equalTo(pt)) {
             len = edge.shape.length;
         }
+    } else if (split.length === 2 && (split[0] === null || split[1] === null)) {
+        if (split[0] === null) {
+            len = 0;
+        } else {
+            len = edge.shape.length;
+        }
     } else {                             // Edge was split into to edges
         len = split[0].length;
     }
